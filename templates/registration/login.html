@@ -1,0 +1,38 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Panacomps{% endblock %}
+
+{% block content %}
+
+  <body class="form-body">
+    <div class="sign-in-container">
+           {% comment %} <a class="navbar-brand" href="#"><img src="../static/assets/images/PanacompsLogo.png" alt="header_logo" /></a> {% endcomment %}
+           <img src="{% static 'assets/images/White PanaComps Logo on Blue 500 x 500 px.png' %}" alt="Panacomps-logo" />
+      <h2>Welcome Back</h2>
+      <h5 class="mrg-bt">Enter the email and password of your account.</h5>
+      {% include 'common/error_messeges.html' %}
+      <form action="" method="POST">
+        {% csrf_token %}
+       
+      <div class="item">
+        <div class="data-field">
+          <label class="form-label" for="">Email</label>
+            {% render_field form.username class="form-control" placeholder="email address" %}
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+          <label class="form-label" for="">Password</label>
+            {% render_field form.password class="form-control" placeholder="*************" %}
+        </div>
+      </div>
+      <button class="download-btn" type="submit">Sign in</button>
+    </form>
+      <h5>Need help?<a href="{% url 'reset_password' %}">Reset your password.</a></h5>
+      <h5 class="text-center">Do not have an account? <a href="{% url 'signup' %}">Sign-up</a></h5>
+    </div>
+
+  </body>
+{% endblock %}

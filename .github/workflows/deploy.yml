@@ -1,0 +1,34 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - panacomps-dashboard-phase2
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add SSH key
+        env:
+            SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ${{ secrets.SSH_HOST_ADDRESS }} >> ~/.ssh/known_hosts
+            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+            chmod 600 ~/.ssh/id_ed25519
+
+      - name: Deploy to server
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+            ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_ADDRESS }} '
+            cd panacomps-web-app &&
+            source venv/bin/activate &&
+            git fetch --all &&
+            git checkout --force main &&
+            git pull &&
+            pip install -r requirements.txt &&
+            python manage.py migrate &&
+            python manage.py collectstatic --noinput &&
+            sudo systemctl restart nginx gunicorn'

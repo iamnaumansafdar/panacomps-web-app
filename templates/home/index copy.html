@@ -1,0 +1,1695 @@
+<!-- index.html -->
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block title %}Panacomps{% endblock %}
+
+{% block content %}
+
+
+<style>
+  /* .filters-content {
+  position: relative;
+  display: block;
+} */
+
+
+
+
+  .filters-content .dropdown-menu {
+    position: absolute;
+    top: 30px;
+    /* Adjust based on your layout */
+    left: 0;
+    /* Align with the + Add button */
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    /* Initially hidden */
+    flex-direction: column;
+    width: 150px;
+    /* Adjust width as needed */
+    z-index: 1;
+    border-radius: 5px;
+    /* Optional: for rounded corners */
+    padding: 5px 0;
+    /* Optional: for padding inside the dropdown */
+  }
+
+  .filters-content .dropdown-menu p {
+    margin: 0;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .filters-content .dropdown-menu p:hover {
+    background-color: #f0f0f0;
+  }
+
+  .filter-rule,
+  .filter-group {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 0 0 0 20px;
+  }
+
+  .filter-rule p,
+  .filter-group p {
+    margin: 0 5px;
+    width: 10%;
+  }
+
+  .filter-rule select,
+  .filter-rule input,
+  .filter-group select,
+  .filter-group input {
+    margin: 0 5px;
+    padding: 5px;
+    border: 1px solid;
+
+  }
+
+  .logic-operator-text {
+    width: 11%;
+  }
+
+  .add-button-container {
+    margin: 10px 0;
+  }
+
+  .remove-filter {
+    cursor: pointer;
+    color: red;
+    margin-left: 10px;
+    width: 10%;
+  }
+</style>
+
+
+<div class="wrapper">
+  <header>
+    <img src="{% static 'assets/images/logo.jpeg' %}" width="30" height="30" alt="header_logo">
+    {% if subscription_level == 'Free' %}
+    <h4 class="account-type-value">Panacomps Web Dashboard</h4>
+    {% else %}
+    <h4 class="account-type-value">Premium</h4>
+    {% endif %}
+  </header>
+  <main>
+    <section class="about-panacops">
+      <div class="heading">
+        <h5>👋 Welcome Back, {{ user.first_name }}</h5>
+        <form id="logout-form" method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-link">Logout</button>
+        </form>
+      </div>
+      <div class="retool-grid">
+        <div class="retool-grid-content">
+          <h3>Panacomps</h3>
+
+          <p>
+            Discover Panacomps, Panamá's exclusive solution for real estate comparables. Designed for Panamá's unique
+            property market, this tool offers real-time data and insights for professionals and investors. Simplify
+            property evaluations and make informed decisions with Panacomps.<br><br>
+            Please submit a request for a new P.H. building <a
+              href="mailto:info@panacomps.com?subject=Request%20for%20New%20P.H.%20Building%20for%20Panacomps">here</a>.<br>
+            Please submit any feedback or bugs <a
+              href="mailto:info@panacomps.com?subject=Feedback%20or%20Bug%20Report">here</a>.
+          </p>
+
+
+
+        </div>
+        <div class="retool-grid-img">
+          <img src="{% static 'assets/images/logo.jpeg' %}" width="128" height="128" alt="Panacomps_logo">
+        </div>
+      </div>
+    </section>
+
+    
+
+    <span class="loader" style="display: none;"></span>
+
+
+    <section class="filters-section">
+      <h4>Building (P.H.) Filters</h4>
+      <div class="filter-grid">
+        <div class="item">
+          <div class="data-field">
+            <label class="form-label" for="">Building List</label>
+            <select class="form-select select2-field" name="building_list" id="building_list">
+              <!-- <option selected style="display: none;" hidden></option> -->
+              {% for building in buildings %}
+              <option value="{{ building }}">{{building}}</option>
+
+              <!-- <option value="{{ building }}">{{building | truncatechars:30}}</option> -->
+              
+
+              {% endfor %}
+
+
+            </select>
+          </div>
+        </div>
+        <div class="item">
+          <button type="button" class="reset-btn"><span>Reset Building</span></button>
+        </div>
+        <div class="item">
+          <div class="data-field">
+            <label class="form-label" for="">Filter by Date Range</label>
+            <input class="form-control" type="text" name="daterange" id="daterange" />
+          </div>
+        </div>
+        <div class="item">
+          <div class="data-field">
+            <label class="form-label" for="">Unit List</label>
+            <select class="form-select select2-field" name="unit_list" id="unit_list">
+              {% for unit in units %}
+              <option value="{{ unit }}">{{ unit|truncatechars:40 }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="item">
+          <div class="data-field">
+            <label class="form-label" for="">Min Sales Price</label>
+            <input type="text" class="form-control" name="min_sales_price" id="min_sales_price" value=""
+              placeholder="Enter value" autocomplete="off" />
+          </div>
+        </div>
+        <div class="item">
+          <div class="data-field">
+            <label class="form-label" for="">Max Sales Price</label>
+            <input type="text" class="form-control" name="max_sales_price" id="max_sales_price"
+              placeholder="Enter value" autocomplete="off" />
+          </div>
+        </div>
+        <div class="item">
+          <div class="data-field">
+            <label class="form-label" for="">Folio Search</label>
+            <select class="form-select select2-field" name="folio_search" id="folio_search">
+              {% for folio in folios %}
+              <option value="{{ folio }}">{{ folio }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="item">
+          <div class="data-field">
+            <label class="form-label" for="">Min Sq. Meters</label>
+            <input type="number" class="form-control" name="min_sq_meter" id="min_sq_meter" value=""
+              placeholder="Enter value" autocomplete="off" />
+          </div>
+        </div>
+        <div class="item">
+          <div class="data-field">
+            <label class="form-label" for="">Max Sq. Meters</label>
+            <input type="number" class="form-control" name="max_sq_meter" id="max_sq_meter" value=""
+              placeholder="Enter value" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="selected-criteria">
+      <div class="heading">
+        <h4>Selected Criteria</h4>
+      </div>
+      <div class="retool-grid">
+        <div class="selected-item">
+          <ul>
+            <li>Building: <span id="building_filter" style="display: none;">P.H. BAHIA ESMERALDA</span> </li>
+            <li>Sold between: <span id="sold_date_range1" style="display: none;"> 17/05/2013 and</span> - <span
+                id="sold_date_range2" style="display: none;">17/05/2024</span></li>
+            <li>Sales Amount Range: <span id="sales_amount_range1" style="display: none;">$B/.0 </span> - <span
+                id="sales_amount_range2" style="display: none;">$B/.10,000,000</span></li>
+            <li>Square Meters Range: <span id="square_meters_range1" style="display: none;">0 m2 </span> - <span
+                id="square_meters_range2" style="display: none;">1000
+                m2</span></li>
+          </ul>
+        </div>
+        <div>
+          <ul>
+            <li>Number of Records:<span id="record_count" style="display: none; padding: 5px;"> {{metric_count}} </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="info-section">
+      <div class="info-table info-table-max">
+        <table class="infoTable">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 171px; text-align: center;">Unit</th>
+              <th scope="col">Folio</th>
+              <th scope="col">Sales Date</th>
+              <th scope="col">Sale Amount</th>
+              <th scope="col">Square Meters</th>
+              <th scope="col">Price Per Square Meters</th>
+              <th scope="col">Date Added</th>
+              <th scope="col">View Detail</th>
+            </tr>
+          </thead>
+          <tbody id="metric_data" class="MetricClass" style="display: none;">
+            {% for metric in metrics %}
+            <tr class="">
+              <td scope="row" style="width: 171px">
+                <div>{{metric.domicilio}}</div>
+
+              </td>
+              <td>{{ metric.folio.folio }}</td>
+              <td>{{ metric.sales_transaction_date | date:"d/m/Y" }}</td>
+              <td>{% if metric.valor_del_traspaso %}${{ metric.valor_del_traspaso }}{% else %}0{% endif %}</td>
+              <td>{{ metric.superficie_inicial }}</td>
+              <td>{% if metric.price_per_square_meter %}${{ metric.price_per_square_meter }}{% else %}0{% endif %}
+              </td>
+              <td>{{ metric.timestamp | date:"d/m/Y" }}</td>
+
+              <td>
+
+                <button type="button" id="viewDwtail" class="view-detail-btn"
+                  data-folio="{{ metric.folio.folio }}"><span>View Detail</span></button>
+
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+
+
+
+        <nav style="display: none;" id="pagination_data" style="display: flex; justify-content: flex-end;"
+          aria-label="Page navigation example">
+          <ul class="pagination" style="display: flex; list-style: none; gap: 10px;">
+            {% if metrics.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1" aria-label="First"
+                style="font-size: 13px; color: #000 !important; text-decoration: none;">
+                <span aria-hidden="true">&laquo;&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ metrics.previous_page_number }}" aria-label="Previous"
+                style="font-size: 13px; color: #000 !important; text-decoration: none;">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+              <span class="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </span>
+            </li>
+            {% endif %}
+
+            {% for num in metrics.paginator.page_range %}
+            {% if num == metrics.number %}
+            <li class="page-item active">
+              <span class="page-link" style="font-size: 13px; color: #000 !important; text-decoration: none;">{{ num
+                }}</span>
+            </li>
+            {% elif num > metrics.number|add:'-3' and num < metrics.number|add:'3' %} <li class="page-item">
+              <a class="page-link" href="?page={{ num }}"
+                style="font-size: 13px; color: #000 !important; text-decoration: none;">{{ num }}</a>
+              </li>
+              {% endif %}
+              {% endfor %}
+
+              {% if metrics.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ metrics.next_page_number }}" aria-label="Next"
+                  style="font-size: 13px; color: #000 !important; text-decoration: none;">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ metrics.paginator.num_pages }}" aria-label="Last"
+                  style="font-size: 13px; color: #000 !important; text-decoration: none;">
+                  <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <span class="page-link" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </span>
+              </li>
+              {% endif %}
+          </ul>
+        </nav>
+
+
+        <button style="display: none;" id="csvBtn1" type="button" data-folio="" class="table-download-btn"><img
+            src="{% static 'assets/images/download-icon.svg' %}" alt="download-icon"> Download</button>
+      </div>
+      <!-- <div class="panacomp-feature">
+        <div class="feature-tag">Premium Panacomps Feature</div>
+        <button type="button" class="download-btn"> <a href="{% url 'download_comps_csv' %}" >Download Comps</a></button>
+        <div class="panacomp-feature-desc">
+          <div class="heading">
+            <div class="feature-tag">Premium Panacomps Feature</div>
+            <button type="button" class="download-btn">Execute Analysis</button>
+          </div>
+          <div class="content">
+            <p class="">👋 Panacomps AI Assistant Here!</p>
+            <p class="">Below are statistics on your selected data:</p>
+            <p class="">Change your data inputs and I will review and output again!</p>
+          </div>
+        </div>
+      </div> -->
+    </section>
+  </main>
+</div>
+<div>
+  <div class="add-filter-rule"></div>
+  <div class="add-filter-group"></div>
+</div>
+
+<!------------Modal---------->
+<div id="viewDwtailModal" class="modal" aria-labelledby="modalTitle" aria-describedby="filtersDescription">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-body">
+      <span class="close">&times;</span>
+      <div>
+
+        <p>Building: <span id="building_name"></span> </p>
+        <p>Folio: <span id="folio_name"></span> </p>
+        <p> <span id="domicilio_top"></span> !**</p>
+
+        <!-- Showing the detial data for metric  -->
+
+        <div class="info-table info-table2">
+          <table class="infoTable">
+            <thead>
+
+              <tr >
+                <th scope="col" style="text-align: center;">Folio</th>
+                <th scope="col">Municipality</th>
+                <th scope="col">Area Code</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Construction Date</th>
+                <th scope="col">Date Occupied</th>
+                <th scope="col">Sales Date</th>
+                <th scope="col">Value</th>
+                <th scope="col">Land Value</th>
+                <th scope="col">Improvement Value</th>
+                <th scope="col">Sales Amount</th>
+                <th scope="col">Square Meters</th>
+                <th scope="col">Price per Square Meter</th>
+                <th scope="col">Loan?</th>
+                <th scope="col">Loan Amount</th>
+                <th scope="col">Effective Mortgage Rate</th>
+                <th scope="col">Nominal Mortgage Rate</th>
+                <th scope="col">Annual Interest Rate</th>
+                <th scope="col">FECI</th>
+                <th scope="col">Annual Interest Rate + FECI</th>
+                <th scope="col">Lending Entity</th>
+                <th scope="col">Date Added</th>
+              </tr>
+            </thead>
+            <tbody class="MetricClass">
+
+              <tr class="row-bg" >
+                <!-- folio -->
+                <td scope="row" id="folio"></td>
+                <!-- Municipality -->
+                <td id="municipio"></td>
+                <!-- Area Code -->
+                <td id="codigo_ubicacion"></td>
+                <!-- Owner -->
+                <td id="propietarios"></td>
+                <!-- Construction date -->
+                <td id="fecha_de_construccion"></td>
+                <!-- Date Occupied -->
+                <td id="fecha_de_ocupacion"></td>
+                <!-- Sales Date -->
+                <td id="sales_transaction_date"></td>
+                <!-- Value -->
+                <td id="valor"></td>
+                <!-- Land Value -->
+                <td id="valor_del_terreno"></td>
+                <!-- Improvement Value -->
+                <td id="valor_de_mejoras"></td>
+                <!-- Sales Amount -->
+                <td id="valor_del_traspaso"></td>
+                <!-- Square Meters -->
+                <td id="superficie_inicial"></td>
+                <!-- Price per Square Meter -->
+                <td id="price_per_square_meter"></td>
+                <!-- Loan -->
+                <td id="hipoteca"></td>
+                <!-- Loan Amount -->
+                <td id="monto"></td>
+                <!-- Effective Mortgage Rate -->
+                <td id="tasa_efectiva"></td>
+                <!-- Nominal Mortgage Rate -->
+                <td id="tasa_nominal"></td>
+                <!-- Annual Interest Rate -->
+                <td id="interes_anual"></td>
+                <!-- FECI -->
+                <td id="feci"></td>
+                <!-- Annual Interest Rate + FECI -->
+                <td id="interes_anual_feci"></td>
+                <!-- Lending Entity -->
+                <td id="nombre"></td>
+                <!-- Date Added -->
+                <td id="timestamp"></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pdf Raw Table -->
+        <div class="info-pdfInfoTable-wrap">
+          <div class="table-action">
+            <div class="filters-dropdown" style="display: none;">
+              <button type="button" id="closebtn" class="filterBtn" onclick="toggleDropdown1('mainFiltersDropdown1')">
+                <img src="{% static 'assets/images/filter-icon.svg' %}" alt="filter-icon" />
+                Filter
+              </button>
+              <div id="mainFiltersDropdown1" class="filters-content" >
+                <p id='main_add' style="margin: 10px; font-size: bold;" onclick="toggleAddOptions()">+ Add</p>
+                <div id="addOptions" class="dropdown-menu" style="display: none;">
+                  <p onclick="addFilterRule()">Add filter rule</p>
+                  <!-- <p onclick="addFilterGroup()">Add filter group</p> -->
+                </div>
+                <div id="filterContainer">
+                  <div class="filter-rule" style="display: none;">
+                    {% for metric in metrics %}
+                    <p id="hide_folio" hidden>{{metric.folio.folio}}</p>
+                    {% endfor %}
+                  </div>
+                  <div id="addButtonContainer" class="add-button-container" style="display: none;">
+                    <button onclick="toggleAddOptions()">+ Add button</button>
+                  </div>
+
+                  <div id="clear_filters" class="clear_filters" style="display: none;">
+                    <button onclick="clearFilters()">Clear filters</button>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- <div id="mainFiltersDropdown" class="filters-content">
+                <div class="filter-grid filter-grid-custom">
+                  <p>Where</p>
+                  <div class="item">
+                    <div class="data-field">
+                      <select class="form-select select2-field" name="" id="">
+                        <option selected>File name</option>
+                        <option value="">Pdf text</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="data-field">
+                      <select class="form-select select2-field" name="" id="">
+                        <option selected>includes</option>
+                        <option value="">dose not includes</option>
+                        <option value="">is</option>
+                        <option value="">is not</option>
+                        <option value="">is empty</option>
+                        <option value="">is not empty</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="data-field">
+                      <input class="form-control" type="text" />
+                    </div>
+                  </div>
+                  <p>X</p>
+                </div>
+                <div class="filter-grid filter-grid-custom">
+                  <div class="item flex-unset">
+                    <div class="data-field">
+                      <select class="form-select select2-field" name="" id="">
+                        <option selected>And</option>
+                        <option value="">Or</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="data-field">
+                      <select class="form-select select2-field" name="" id="">
+                        <option selected>File name</option>
+                        <option value="">Pdf text</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="data-field">
+                      <select class="form-select select2-field" name="" id="">
+                        <option selected>includes</option>
+                        <option value="">dose not includes</option>
+                        <option value="">is</option>
+                        <option value="">is not</option>
+                        <option value="">is empty</option>
+                        <option value="">is not empty</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="data-field">
+                      <input class="form-control" type="text" />
+                    </div>
+                  </div>
+                  <p>X</p>
+                </div>
+                <div class="filter-grid filter-grid-custom">
+                  <p>And</p>
+                  <div class="filter-grid filter-grid-custom border-class">
+                    <div class="wrapping">
+                      <p>Where</p>
+                      <div class="item">
+                        <div class="data-field">
+                          <select class="form-select select2-field" name="" id="">
+                            <option selected>File name</option>
+                            <option value="">Pdf text</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="data-field">
+                          <select class="form-select select2-field" name="" id="">
+                            <option selected>includes</option>
+                            <option value="">dose not includes</option>
+                            <option value="">is</option>
+                            <option value="">is not</option>
+                            <option value="">is empty</option>
+                            <option value="">is not empty</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="data-field">
+                          <input class="form-control" type="text" />
+                        </div>
+                      </div>
+                      <p>X</p>
+                    </div>
+                    <div class="add-contentbtn">
+                      <button type="button" class="filterBtn addbtn" onclick="toggleDropdown('addFiltersDropdown')">
+                        + Add
+                      </button>
+                      <div id="addFiltersDropdown" class="filters-content nested-dropdown">
+                        <button type="button" onclick="handleClick('no-group')">
+                          Add filter rule
+                        </button>
+                        <button type="button" onclick="handleClick('group')">
+                          Add filter group
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="add-contentbtn">
+                  <button type="button" class="filterBtn addbtn bordered-btn" onclick="toggleDropdown('addFiltersDropdown')">
+                    + Add
+                  </button>
+                  <div id="addFiltersDropdown" class="filters-content nested-dropdown">
+                    <button type="button" onclick="handleClick('no-group')">
+                      Add filter rule
+                    </button>
+                    <button type="button" onclick="handleClick('group')">
+                      Add filter group
+                    </button>
+                  </div>
+                </div>
+                <button type="button" class="filterBtn addbtn clearbtn">
+                  Clear filters
+                </button>
+              </div> -->
+
+
+            <button id="csvBtn" type="button" data-folio=""><img src="{% static 'assets/images/download-icon.svg' %}"
+                alt="download-icon"> Download</button>
+
+            <button type="button" id="refreshBtn"><img src="{% static 'assets/images/refresh-con.svg' %}"
+                alt="refresh-icon"> Refresh
+            </button>
+          </div>
+          
+          <!-- Table for showing pdf data -->
+          <table class="pdfInfoTable" id="pdfInfoTable">
+            <thead>
+              <tr>
+                <th scope="col" class="file-width">Filename</th>
+                <th scope="col" class="full-width">Pdf text</th>
+              </tr>
+            </thead>
+            <tbody id="pdfTableBody">
+
+              <!-- <tr class="row-bg clickable">
+                <td scope="row" class="file-width relative-txt">
+                  <div  class="" id="filename">
+
+                  </div>
+                </td>
+                <td class="full-width relative-txt">
+                  <div  class="" id="pdf_raw_data"></div>
+                </td>
+              </tr> -->
+
+              <div id="spinner" style="display: none; margin-inline: 50%; width: 100%;">
+                <img src="{% static 'assets/images/spinner.gif'%}" alt="Loading..." style="width: 30px; height: 30px;">
+              </div>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  
+  //Pdf Data Refresh buttton
+  $(document).ready(function () {
+
+
+    $('#refreshBtn').click(function () {
+      $('#spinner').show();
+      setTimeout(function () {
+        $('#spinner').hide();
+      }, 2000);
+    });
+  });
+
+
+  //Inilialized the Data range Format
+  $(document).ready(function () {
+
+    var today = moment();
+    var startDate = moment().subtract(1900, 'years').set({
+      'year': today.year(),
+      'month': today.month(),
+      'date': today.date()
+    }).startOf('day');
+
+
+
+    // Date Range Selector
+    $('input[name="daterange"]').daterangepicker({
+      opens: 'left',
+      startDate: moment().subtract(1488, 'months').startOf('day'),
+      endDate: moment().endOf('day'),
+      locale: {
+        format: 'DD/MM/YYYY'
+      }
+    }, function (start, end, label) {
+      console.log("A new date selection was made: " + start.format('DD/MM/YYYY') + ' to ' + end.format('DD/MM/YYYY'));
+    });
+
+
+   //JavaScript Function to Format Numbers with Commas
+   function formatNumberWithCommas(x) {
+    console.log(x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    //Function To Open the Model onclick view detail with Dynamic Data
+    // show data for metrics and pdf raw  
+    $('.view-detail-btn').click(function () {
+      var folio = $(this).data('folio');
+
+      console.log(folio, 'folio')
+
+      // Reset button state before making the AJAX call
+      $('#csvBtn').prop('disabled', false);
+
+      $.ajax({
+        url: "{% url 'view_detail_ajax' %}",
+        data: {
+          folio: folio
+        },
+        dataType: 'json',
+        success: function (response) {
+          var pdfData = response.pdf_raw_data;
+          var metrics = response.metrics;
+          console.log(pdfData, 'pdf')
+          // console.log(metrics, 'metric')
+
+
+          if (metrics.length > 0) {
+            function formatDate(dateString) {
+              var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+              var date = new Date(dateString);
+              return date.toLocaleDateString('en-GB', options); // 'en-GB' locale for DD/MM/YYYY format
+            }
+
+
+            // top items
+            $("#building_name").html(metrics[0].edificio);
+            $("#folio_name").html(metrics[0].folio__folio);
+            $("#domicilio_top").html(metrics[0].domicilio);
+            // end top items
+            $("#folio").html(metrics[0].folio__folio);
+            $("#municipio").html(metrics[0].municipio);
+            $("#codigo_ubicacion").html(metrics[0].codigo_ubicacion);
+            $("#propietarios").html(metrics[0].propietarios);
+
+            var formattedFechaDeConstruccion = formatDate(metrics[0].fecha_de_construccion);
+            var formattedFechaDeOcupacion = formatDate(metrics[0].fecha_de_ocupacion);
+            var formattedSalesTransactionDate = formatDate(metrics[0].sales_transaction_date);
+
+            $("#fecha_de_construccion").html(formattedFechaDeConstruccion);
+            $("#fecha_de_ocupacion").html(formattedFechaDeOcupacion);
+            $("#sales_transaction_date").html(formattedSalesTransactionDate);
+
+            // Values with $
+            var firstMetric = metrics[0];
+            $('#valor').html(firstMetric.valor ? '$' + formatNumberWithCommas(firstMetric.valor) : '0');
+            $('#valor_del_terreno').html(firstMetric.valor_del_terreno ? '$' + formatNumberWithCommas(firstMetric.valor_del_terreno) : '0');
+            $('#valor_de_mejoras').html(firstMetric.valor_de_mejoras ? '$' + formatNumberWithCommas(firstMetric.valor_de_mejoras) : '0');
+            $('#valor_del_traspaso').html(firstMetric.valor_del_traspaso ? '$' + formatNumberWithCommas(firstMetric.valor_del_traspaso) : '0');
+            $('#price_per_square_meter').html(firstMetric.price_per_square_meter ? '$' + formatNumberWithCommas(firstMetric.price_per_square_meter) : '0');
+            $('#monto').html(firstMetric.monto ? '$' + formatNumberWithCommas(firstMetric.monto) : '0')
+
+            // Values with %
+            $('#tasa_efectiva').html(firstMetric.tasa_efectiva ? firstMetric.tasa_efectiva + '%' : '0');
+            $('#tasa_nominal').html(firstMetric.tasa_nominal ? firstMetric.tasa_nominal + '%' : '0');
+            $('#interes_anual').html(firstMetric.interes_anual ? firstMetric.interes_anual + '%' : '0');
+            $('#feci').html(firstMetric.feci ? firstMetric.feci + '%' : '0');
+            $('#interes_anual_feci').html(firstMetric.interes_anual_feci ? firstMetric.interes_anual_feci + '%' : '0');
+
+            $("#superficie_inicial").html(metrics[0].superficie_inicial);
+            $("#hipoteca").html(metrics[0].hipoteca);
+            $("#nombre").html(metrics[0].nombre);
+            $("#uso_del_suelo").html(metrics[0].uso_del_suelo);
+
+
+            if (metrics.length > 0 && metrics[0].timestamp) {
+              var formattedDate = formatDate(metrics[0].timestamp);
+              $("#timestamp").html(formattedDate);
+            }
+
+
+            // set id for download pdf button
+            var firstMetric = metrics[0];
+            $('#csvBtn').attr('data-folio', firstMetric.folio__folio);
+
+            }
+
+            
+            $("#pdfInfoTable tbody").empty();
+
+            
+
+            if (pdfData.length == 0) {
+              console.log('Running')
+              $('#csvBtn').prop('disabled', true).addClass('disabled');
+            }
+            if (pdfData.length > 0) {
+
+            pdfData.forEach(function (pdf) {
+             
+              var newRow = `<tr class="row-bg clickable">
+                <td scope="row" class="file-width relative-txt">
+                    <div class="">${pdf.filename}</div>
+                </td>
+                <td class="full-width relative-txt">
+                    <div class="">${pdf.pdf_text}</div>
+                </td>
+                </tr>`;
+
+              $("#pdfTableBody").append(newRow);
+            });
+
+          }
+          $('#viewDwtailModal').show();
+        }
+      });
+    });
+  });
+
+
+
+
+
+
+  // Reset Building Button
+  $(document).ready(function () {
+    // Handle the reset button click
+    $('.reset-btn').on('click', function () {
+      console.log('Reset Button Clicked')
+      // Clear the building and unit select elements
+      $('#building_list').empty().append('<option selected></option>');
+      {% for building in buildings %}
+      $('#building_list').append('<option value="{{ building }}">{{ building }}</option>');
+      {% endfor %}
+
+      $('#unit_list').empty().append('<option selected></option>');
+      {% for unit in units %}
+      $('#unit_list').append('<option value="{{ unit }}">{{ unit|truncatechars:40 }}</option>');
+      {% endfor %}
+
+      $('#folio_search').empty().append('<option selected></option>');
+      {% for folio in folios %}
+      $('#unit_list').append('<option value="{{ folio }}">{{ folio }}</option>');
+      {% endfor %}
+
+      $('#min_sales_price').val('');
+      $('#max_sales_price').val('');
+      $('#min_sq_meter').val('');
+      $('#max_sq_meter').val('');
+
+      $('#building_filter').text('');
+      $('#sales_amount_range1').text('');
+      $('#sales_amount_range2').text('');
+      $('#square_meters_range1').text('');
+      $('#square_meters_range2').text('');
+      $('#record_count').text('');
+      $('#sold_date_range1').text('');
+      $('#sold_date_range2').text('');
+      $("#metric_data").empty();
+      $("#pagination_data").empty();
+
+      //Set the defualt Date
+      var defaultStartDate = moment().subtract(24, 'months').startOf('day').format('DD/MM/YYYY');
+      var defaultEndDate = moment().endOf('day').format('DD/MM/YYYY');
+      $('#daterange').val(defaultStartDate + ' - ' + defaultEndDate);
+
+      $.ajax({
+        url: '/Reset-all-data/',
+        type: 'GET',
+        data: {
+          'building': '',
+          'unit': '',
+
+        },
+        success: function (response) {
+          console.log(response, 'Reset');
+        }
+      });
+    });
+  });
+
+
+
+  //Check the Data Format
+  function isValidDateRange(dateRange) {
+    if (!dateRange) return false;
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4} - \d{2}\/\d{2}\/\d{4}$/;
+    console.log(dateRegex.test(dateRange), 'Test')
+    return dateRegex.test(dateRange);
+
+
+  }
+
+
+
+
+  //All filters the values
+  $(document).ready(function () {
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var unitSelect = document.getElementById('unit_list');
+        var folioSelect = document.getElementById('folio_search');
+
+        unitSelect.selectedIndex = -1;  
+        folioSelect.selectedIndex = -1;  
+    });
+
+
+    console.log('Document is Ready to Load')
+
+    if (typeof $.fn.DataTable === 'function') {
+          console.log('DataTables is loaded');
+      } else {
+          console.log('DataTables is not loaded');
+          return; // Exit if DataTables is not loaded
+      }
+
+    $('#building_list').on('change', function () {
+      console.log('Wokring')
+      var selectedBuilding = $(this).val();
+      var selectedDateRange = $('#daterange').val();
+      console.log('selectedBuilding ', selectedBuilding)
+
+      $.ajax({
+        url: '/filter-units-folios/',  
+        type: 'GET',
+        data: {
+          'building': selectedBuilding,
+          'date_range': selectedDateRange
+        },
+        success: function (response) {
+          // $('.infoTable1').DataTable().clear().destroy();
+          var unitList = $('#unit_list');
+          var folioList = $('#folio_search');
+
+          unitList.empty();
+          folioList.empty();
+
+          var units = response.units
+          var folios = response.folios
+
+          // unitList.append('<option selected></option>');
+          // folioList.append('<option selected></option>');
+
+
+          // Append folios to folioList
+          $.each(response.folios, function (index, folio) {
+            folioList.append('<option value="' + folio + '">' + folio + '</option>');
+          });
+
+          $.each(response.units, function (index, unit) {
+            var truncatedUnit = truncateString(unit, 40);
+            unitList.append('<option value="' + unit + '">' + truncatedUnit + '</option>');
+          });
+
+          unitList.prop('selectedIndex', -1);
+          folioList.prop('selectedIndex', -1);
+
+
+        }
+      });
+    });
+
+    function truncateString(str, num) {
+      if (str.length <= num) {
+        return str;
+      }
+      return str.slice(0, num) + '...';
+    }
+    function applyCustomStylesToUnitList() {
+      $('#unit_list').css({
+        'background-color': 'white', 
+        'border': '1px solid #ccc',  
+        'padding': '5px'            
+      });
+    }
+   });
+
+
+  //  $(document).ready(function () {
+
+
+  //   function formatNumberWithCommas(x) {
+  //   console.log(x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+  //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //   }
+
+  //   function formatInputValue(element) {
+  //       var value = element.val().replace(/,/g, ''); // Remove existing commas
+  //       if (!isNaN(value) && value.length > 0) {
+  //           element.val(formatNumberWithCommas(value));
+  //       }
+  //   }
+
+  //   $('#min_sales_price, #max_sales_price').on('input', function () {
+  //       formatInputValue($(this));
+  //   });
+
+  //   $('#min_sales_price, #max_sales_price, #min_sq_meter, #max_sq_meter, #building_list, #unit_list, #folio_search, #daterange').on('input change', function () {
+
+  //     var minSalesPrice = $('#min_sales_price').val().replace(/,/g, ''); // Remove commas for the AJAX request
+  //     var maxSalesPrice = $('#max_sales_price').val().replace(/,/g, ''); // Remove commas for the AJAX request
+  //     console.log(minSalesPrice, 'minSalesPrice')
+  //     var minSqMeter = $('#min_sq_meter').val();
+  //     var maxSqMeter = $('#max_sq_meter').val();
+  //     var selectedBuilding = $('#building_list').val();
+  //     var selectedUnit = $('#unit_list').val();
+  //     var selectedFolio = $('#folio_search').val();
+  //     var selectedDateRange = $('#daterange').val();
+
+  //     $('.loader').show();
+
+  //     console.log(selectedBuilding, selectedUnit, selectedFolio, 'selectedUnit ')
+
+  //     console.log(selectedDateRange, 'selectedDateRange')
+  //     // Validate date range format
+  //     if (!isValidDateRange(selectedDateRange)) {
+  //       console.log('Invalid date range format');
+  //       return;
+  //     }
+  //     $.ajax({
+  //       url: '/update-panaComs-dashboard/',
+  //       type: 'GET',
+  //       data: {
+  //         'min_sales_price': minSalesPrice,
+  //         'max_sales_price': maxSalesPrice,
+  //         'min_sq_meter': minSqMeter,
+  //         'max_sq_meter': maxSqMeter,
+  //         'building': selectedBuilding,
+  //         'unit': selectedUnit,
+  //         'folio': selectedFolio,
+  //         'date_range': selectedDateRange
+  //       },
+  //       success: function (response) {
+         
+  //         // Update selected criteria
+  //         $('#building_filter').text(response.building);
+  //         $('#sales_amount_range1').text('$B/' + response.min_sales_price);
+  //         $('#sales_amount_range2').text('$B/' + response.max_sales_price);
+  //         $('#square_meters_range1').text(response.min_sq_meter + 'm2');
+  //         $('#square_meters_range2').text(response.max_sq_meter + 'm2');
+  //         $('#record_count').text(response.record_count);
+  //         $('#sold_date_range1').text(response.start_date_format);
+  //         $('#sold_date_range2').text(response.end_date_format);
+
+
+  //         console.log('First Call')
+
+
+
+  //         if ($.fn.DataTable && $.fn.DataTable.isDataTable('.infoTable')) {
+  //                           console.log('Destroying existing DataTable');
+  //                           $('.infoTable').DataTable().clear().destroy();
+  //                       }
+
+  //         // Remove dynamically added colgroup elements
+  //         $('.infoTable').find('colgroup').remove();
+         
+          
+
+        
+  //         $("#metric_data").html(response.metric_data)
+  //         $("#pagination_data").html(response.pagination_data);
+  //         $('#metric_data').show();
+  //         $('#pagination_data').show();
+
+
+
+
+
+
+  //           // Initialize DataTable
+  //           $('.infoTable').DataTable({
+  //               responsive: true,
+  //               searching: false,
+  //               lengthChange: false,
+  //               paging: false,
+  //               info: false,
+  //               "lengthMenu": [ -1 ],
+  //               order: [[0, 'desc']],
+  //               columnDefs: [
+  //                       { targets: [7], orderable: false } // Disable sorting for the 8th column (index 7)
+  //                   ]
+  //           });
+
+            
+
+  //           // $('#building_filter, #sales_amount_range1, #sales_amount_range2, #square_meters_range1, #square_meters_range2, #record_count, #sold_date_range1, #sold_date_range2, #metric_data, #pagination_data').show();
+
+
+  //         $('.loader').hide();
+  //         $('#building_filter').show();
+  //         $('#sales_amount_range1').show();
+  //         $('#sales_amount_range2').show();
+  //         $('#square_meters_range1').show();
+  //         $('#square_meters_range2').show();
+  //         $('#record_count').show();
+  //         $('#sold_date_range1').show();
+  //         $('#sold_date_range2').show();
+         
+  //       }
+  //     });
+  //   });
+  // });
+
+  $(document).ready(function () {
+    console.log('Document is Ready to Load second time');
+
+    function formatNumberWithCommas(x) {
+        console.log(x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function formatInputValue(element) {
+        var value = element.val().replace(/,/g, ''); // Remove existing commas
+        if (!isNaN(value) && value.length > 0) {
+            element.val(formatNumberWithCommas(value));
+        }
+    }
+
+    $('#min_sales_price, #max_sales_price').on('input', function () {
+        formatInputValue($(this));
+    });
+
+    var debounceTimeout;
+    var debounceDelay = 500; // Delay in milliseconds
+
+    function debounceAjaxCall() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(makeAjaxCall, debounceDelay);
+    }
+
+    function makeAjaxCall() {
+        var minSalesPrice = $('#min_sales_price').val().replace(/,/g, ''); // Remove commas for the AJAX request
+        var maxSalesPrice = $('#max_sales_price').val().replace(/,/g, ''); // Remove commas for the AJAX request
+        console.log(minSalesPrice, 'minSalesPrice');
+        console.log(maxSalesPrice, 'maxSalesPrice');
+        var minSqMeter = $('#min_sq_meter').val();
+        var maxSqMeter = $('#max_sq_meter').val();
+        var selectedBuilding = $('#building_list').val();
+        var selectedUnit = $('#unit_list').val();
+        var selectedFolio = $('#folio_search').val();
+        var selectedDateRange = $('#daterange').val();
+
+        $('.loader').show();
+
+        console.log(selectedBuilding, selectedUnit, selectedFolio, 'selectedUnit');
+        console.log(selectedDateRange, 'selectedDateRange');
+
+        // Validate date range format
+        if (!isValidDateRange(selectedDateRange)) {
+            console.log('Invalid date range format');
+            return;
+        }
+
+        $.ajax({
+            url: '/update-panaComs-dashboard/',
+            type: 'GET',
+            data: {
+                'min_sales_price': minSalesPrice,
+                'max_sales_price': maxSalesPrice,
+                'min_sq_meter': minSqMeter,
+                'max_sq_meter': maxSqMeter,
+                'building': selectedBuilding,
+                'unit': selectedUnit,
+                'folio': selectedFolio,
+                'date_range': selectedDateRange
+            },
+            success: function (response) {
+                // Update selected criteria
+                $('#building_filter').text(response.building);
+                $('#sales_amount_range1').text('$B/' + response.min_sales_price);
+                $('#sales_amount_range2').text('$B/' + response.max_sales_price);
+                $('#square_meters_range1').text(response.min_sq_meter + 'm2');
+                $('#square_meters_range2').text(response.max_sq_meter + 'm2');
+                $('#record_count').text(response.record_count);
+                $('#sold_date_range1').text(response.start_date_format);
+                $('#sold_date_range2').text(response.end_date_format);
+
+                console.log('First Call');
+
+                if ($.fn.DataTable && $.fn.DataTable.isDataTable('.infoTable')) {
+                    console.log('Destroying existing DataTable');
+                    $('.infoTable').DataTable().clear().destroy();
+                }
+
+                // Remove dynamically added colgroup elements
+                $('.infoTable').find('colgroup').remove();
+
+                $("#metric_data").html(response.metric_data);
+                $("#pagination_data").html(response.pagination_data);
+                $('#metric_data').show();
+                $('#pagination_data').show();
+
+                $.extend($.fn.dataTableExt.oSort, {
+                      "date-eu-pre": function (a) {
+                          if (a == null || a == "") {
+                              return 0;
+                          }
+                          var eu_date = a.split('/');
+                          return (eu_date[2] + eu_date[1] + eu_date[0]) * 1;
+                      },
+                      "date-eu-asc": function (a, b) {
+                          return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+                      },
+                      "date-eu-desc": function (a, b) {
+                          return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+                      }
+                  });
+
+
+
+
+                
+
+                // Initialize DataTable
+                $('.infoTable').DataTable({
+                    responsive: true,
+                    searching: false,
+                    lengthChange: false,
+                    paging: false,
+                    info: false,
+                    "lengthMenu": [-1],
+                    order: [],
+                    columnDefs: [
+                    {
+                          targets: [2], // Apply this to columns 0 and 1
+                          type: 'date-eu',
+                          orderSequence: ["asc", "desc"]
+                      }
+                  ]
+                    
+                });
+
+                $('.loader').hide();
+                $('#building_filter').show();
+                $('#sales_amount_range1').show();
+                $('#sales_amount_range2').show();
+                $('#square_meters_range1').show();
+                $('#square_meters_range2').show();
+                $('#record_count').show();
+                $('#sold_date_range1').show();
+                $('#sold_date_range2').show();
+            }
+        });
+    }
+
+    $('#min_sales_price, #max_sales_price, #min_sq_meter, #max_sq_meter, #building_list, #unit_list, #folio_search, #daterange').on('input change', debounceAjaxCall);
+});
+
+
+$(document).ready(function () {
+    
+    // Function to handle pagination click event
+    function handlePaginationClick(event) {
+        event.preventDefault();
+        $('.loader').show();
+        var page = $(this).data('page');
+        makeAjaxCall(page);
+    }
+
+    // Attach click event to pagination links
+    $(document).on('click', '.page-link', handlePaginationClick);
+
+
+    // Update makeAjaxCall function to accept a page parameter
+    function makeAjaxCall(page) {
+        var minSalesPrice = $('#min_sales_price').val().replace(/,/g, '');
+        var maxSalesPrice = $('#max_sales_price').val().replace(/,/g, '');
+        var minSqMeter = $('#min_sq_meter').val();
+        var maxSqMeter = $('#max_sq_meter').val();
+        var selectedBuilding = $('#building_list').val();
+        var selectedUnit = $('#unit_list').val();
+        var selectedFolio = $('#folio_search').val();
+        var selectedDateRange = $('#daterange').val();
+
+        
+
+        $.ajax({
+            url: '/update-panaComs-dashboard/',
+            type: 'GET',
+            data: {
+                'min_sales_price': minSalesPrice,
+                'max_sales_price': maxSalesPrice,
+                'min_sq_meter': minSqMeter,
+                'max_sq_meter': maxSqMeter,
+                'building': selectedBuilding,
+                'unit': selectedUnit,
+                'folio': selectedFolio,
+                'date_range': selectedDateRange,
+                'page': page // Add the page parameter to the request
+            },
+            success: function (response) {
+                // Update table and pagination data
+
+                // Reinitialize DataTable if needed
+                if ($.fn.DataTable && $.fn.DataTable.isDataTable('.infoTable')) {
+                    $('.infoTable').DataTable().clear().destroy();
+                }
+
+                // Remove dynamically added colgroup elements
+                $('.infoTable').find('colgroup').remove();
+
+                $("#metric_data").html(response.metric_data);
+                $("#pagination_data").html(response.pagination_data);
+                $('#metric_data').show();
+                $('#pagination_data').show();
+
+
+
+                $('.infoTable').DataTable({
+                    responsive: true,
+                    searching: false,
+                    lengthChange: false,
+                    paging: false,
+                    info: false,
+                    "lengthMenu": [-1],
+                    order: [],
+                });
+
+                $('.loader').hide();
+            }
+        });
+    }
+
+    // Existing input event handlers
+    // $('#min_sales_price, #max_sales_price, #min_sq_meter, #max_sq_meter, #building_list, #unit_list, #folio_search, #daterange').on('input change', debounceAjaxCall);
+});
+
+
+  
+
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var tableBody = document.getElementById("pdfTableBody");
+    tableBody.addEventListener("click", function (event) {
+      if (event.target && event.target.closest(".row-bg.clickable")) {
+        event.target.closest(".row-bg.clickable").classList.add("active");
+      }
+    });
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".row-bg.clickable")) {
+        var activeRows = document.querySelectorAll(".row-bg.clickable.active");
+        activeRows.forEach(function (row) {
+          row.classList.remove("active");
+        });
+      }
+    });
+  });
+
+
+  // Design for filter button
+  // when click on the filter button show add button
+
+  function toggleDropdown1(id) {
+    console.log('CLICKED')
+    var dropdown = document.getElementById(id);
+    var filterContainer = document.getElementById('filterContainer');
+    if (dropdown.style.display === 'block') {
+      dropdown.style.display = 'none';
+    } else {
+      dropdown.style.display = 'block';
+      filterContainer.innerHTML = `
+        <div class="filter-rule" style="display: none;">
+          {% for metric in metrics %}
+          <p id="hide_folio" hidden>{{metric.folio.folio}}</p>
+          {% endfor %}
+        </div>
+        <div id="addButtonContainer" class="add-button-container" style="display: none;">
+          <button onclick="toggleAddOptions()">+ Add button</button>
+        </div>
+        <div id="clear_filters" class="clear_filters" style="display: none;">
+          <button onclick="clearFilters()">Clear filters</button>
+        </div>
+      `;
+    }
+  }
+
+
+  function toggleAddOptions() {
+    var addOptions = document.getElementById('addOptions');
+    addOptions.style.display = addOptions.style.display === 'block' ? 'none' : 'block';
+    // document.getElementById('filterContainer').style.display = 'block'
+
+  }
+
+  function updateFilterCount() {
+    var filterCount = document.getElementsByClassName('filter-rule').length;
+    var filterButton = document.querySelector('.filterBtn');
+    filterButton.innerHTML = `
+        <img src="{% static 'assets/images/filter-icon.svg' %}" alt="filter-icon" />
+        Filter (${filterCount})
+    `;
+  }
+  let currentLogicalOperator = 'And';
+
+  function addFilterRule() {
+    // Hide the main add button and options
+    var main_add = document.getElementById('main_add');
+    main_add.style.display = 'none';
+    var main_add = document.getElementById('addOptions');
+    main_add.style.display = 'none';
+
+    // Show the add button menu and clear filters option
+    var addButtonContainer = document.getElementById('addButtonContainer');
+    var addClearFilterContainer = document.getElementById('clear_filters');
+    var filterContainer = document.getElementById('filterContainer');
+    // filterContainer.style.display = 'block'
+  
+
+    console.log(addButtonContainer, addClearFilterContainer, filterContainer, 'paras')
+
+    // Determine the number of existing filter rules
+    var filterRules = filterContainer.getElementsByClassName('filter-rule');
+    var ruleCount = filterRules.length;
+
+    console.log(ruleCount, 'ruleCount')
+
+    // Create a new filter rule element
+    var filterRule = document.createElement('div');
+    filterRule.className = 'filter-rule';
+
+    // Set inner HTML based on the count of existing rules
+    if (ruleCount === 0) {
+      filterRule.innerHTML = `
+      <p>Where</p>
+            <select id='file_select'>
+                <option value="filename">Filename</option>
+                <option value="pdftext">PDF text</option>
+            </select>
+            <select id='include_select'>
+              <option selected value="includes">includes</option>
+              <option value="dose_not_includes">dose not includes</option>
+              <option value="is">is</option>
+              <option value="is_not">is not</option>
+              <option value="is_empty">is empty</option>
+              <option value="is_not_empty">is not empty</option>
+            </select>
+            <input type="text" id='test_input' />
+            <span class="remove-filter" onclick="removeFilter(this)">X</span>
+
+
+        `;
+
+
+    } 
+    else if (ruleCount === 1) {
+      filterRule.innerHTML = `
+            <select class="logic-operator" id='logic_operator'>
+                <option value="And" ${currentLogicalOperator === 'And' ? 'selected' : ''}>And</option>
+                <option value="Or" ${currentLogicalOperator === 'Or' ? 'selected' : ''}>Or</option>
+            </select>
+            <select id='file_select' class='file_select'>
+                <option value="filename">Filename</option>
+                <option value="pdftext">PDF text</option>
+            </select>
+            <select id='include_select' class='include_select'>
+              <option selected value="includes">includes</option>
+              <option value="dose_not_includes">dose not includes</option>
+              <option value="is">is</option>
+              <option value="is_not">is not</option>
+              <option value="is_empty">is empty</option>
+              <option value="is_not_empty">is not empty</option>
+            </select>
+            <input type="text" id='test_input' class='test_input' />
+            <span class="remove-filter" onclick="removeFilter(this)">X</span>
+        `;
+    } else {
+      filterRule.innerHTML = `
+            <span  class="logic-operator" id='paras-operator'>${currentLogicalOperator}</span>
+            <select id='file_select' class='file_select'>
+                <option value="filename">Filename</option>
+                <option value="pdftext">PDF text</option>
+            </select>
+            <select id='include_select' class='include_select'>
+              <option selected value="includes">includes</option>
+              <option value="dose_not_includes">dose not includes</option>
+              <option value="is">is</option>
+              <option value="is_not">is not</option>
+              <option value="is_empty">is empty</option>
+              <option value="is_not_empty">is not empty</option>
+            </select>
+            <input type="text" id='test_input' class='test_input' />
+            <span class="remove-filter" onclick="removeFilter(this)">X</span>
+        `;
+        
+    }
+
+
+   
+
+    // Append the new filter rule to the container
+    filterContainer.appendChild(filterRule);
+    // Show the add button container and clear filters container
+    addButtonContainer.style.display = 'block';
+    filterContainer.appendChild(addButtonContainer);
+    addClearFilterContainer.style.display = 'block';
+    filterContainer.appendChild(addClearFilterContainer);
+
+    // Add event listener to the logic operator select (if it's the second rule)
+
+    console.log(ruleCount, 'before op ruleCount')
+    if (ruleCount == 1 ) {
+      var logicOperatorSelect = filterRule.querySelector('.logic-operator');
+      console.log(logicOperatorSelect, 'logicOperatorSelect')
+      logicOperatorSelect.addEventListener('change', function () {
+        console.log(this.value, 'this value')
+        updateLogicOperators(this.value);
+      });
+    }
+
+    // Update the filter count
+    updateFilterCount();
+
+  }
+
+  function updateLogicOperators(selectedValue) {
+    var filterContainer = document.getElementById('filterContainer');
+    var logicOperators = filterContainer.getElementsByClassName('logic-operator');
+    // var logicOperatorTexts = filterContainer.getElementsByClassName('logic-operator-text');
+
+    // Log the selected value
+    console.log('Selected Value:', selectedValue);
+
+    // Check if the selected value is valid
+    if (selectedValue === 'And' || selectedValue === 'Or') {
+        currentLogicalOperator = selectedValue;
+    } else {
+        currentLogicalOperator = 'And'; // Default to 'And' if the value is invalid
+    }
+
+    // Log the current logical operator
+    console.log('Current Logical Operator:', currentLogicalOperator);
+
+    // Update all logic operator selects
+    for (var i = 0; i < logicOperators.length; i++) {
+        logicOperators[i].value = currentLogicalOperator;
+        // Log each updated logic operator value
+        console.log(`Logic Operator ${i} Value:`, logicOperators[i].value);
+    }
+    // Update the specific logic operator text element by ID
+    var logicOperatorText = document.getElementById('paras-operator');
+    console.log(logicOperatorText)
+    if (logicOperatorText) {
+        logicOperatorText.innerText = currentLogicalOperator;
+        console.log(`Updated logic operator text with ID 'paras-operator':`, logicOperatorText.innerText);
+    } else {
+        console.error('Element with ID "paras-operator" not found.');
+    }
+
+}
+
+
+
+
+  function removeFilter(element) {
+    element.parentNode.remove();
+    updateFilterCount()
+  }
+
+
+  function clearFilters() {
+    var filterContainer = document.getElementById('filterContainer');
+    filterContainer.innerHTML = `
+      <div class="filter-rule" style="display: none;">
+        {% for metric in metrics %}
+        <p id="hide_folio" hidden>{{metric.folio.folio}}</p>
+        {% endfor %}
+      </div>
+      <div id="addButtonContainer" class="add-button-container" style="display: none;">
+        <button onclick="toggleAddOptions()">+ Add button</button>
+      </div>
+      <div id="clear_filters" class="clear_filters" style="display: none;">
+        <button onclick="clearFilters()">Clear filters</button>
+      </div>
+    `;
+    document.getElementById('main_add').style.display = 'block';
+    updateFilterCount();
+  }
+    
+
+  $(document).ready(function () {
+    $('#test_input').on('input', function () {
+      console.log('Working')
+    });
+  });
+
+
+
+  function triggerAjaxCall(folioId) {
+  var filterRules = document.getElementsByClassName('filter-rule');
+  console.log(filterRules, 'filterRules')
+  var filters = [];
+  
+  for (var i = 1; i < filterRules.length; i++) {
+    var rule = filterRules[i];
+    var fileSelect = rule.querySelector('.file_select').value;
+    var includeSelect = rule.querySelector('.include_select').value;
+    var testInput = rule.querySelector('.test_input').value;
+    var logicOperator = rule.querySelector('.logic-operator').value;
+    console.log(fileSelect, includeSelect, testInput, logicOperator)
+    
+    filters.push({
+      fileSelect: fileSelect,
+      includeSelect: includeSelect,
+      testInput: testInput,
+      logicOperator: logicOperator
+    });
+  }
+
+  $.ajax({
+    url: '/filter-pdf-data/',
+    method: 'GET',
+    data: {
+      filters: JSON.stringify(filters),
+      folioId:folioId
+
+    },
+    success: function(response) {
+      console.log(response);
+      var pdfData = response.pdf_data;
+      console.log(pdfData, 'pdfData');
+      // Clear the table body
+      $("#pdfTableBody").empty();
+
+      // Populate the table with filtered data
+      if (pdfData.length > 0) {
+        pdfData.forEach(function(pdf) {
+          var newRow = `<tr class="row-bg clickable">
+            <td scope="row" class="file-width relative-txt">
+                <div class="">${pdf.filename}</div>
+            </td>
+            <td class="full-width relative-txt">
+                <div class="">${pdf.pdf_text}</div>
+            </td>
+          </tr>`;
+
+          $("#pdfTableBody").append(newRow);
+        });
+      } else {
+        // If no data is found, you can display a message or handle it as needed
+        var noDataMessage = `<tr class="row-bg clickable">
+          <td colspan="2" class="relative-txt">No data found</td>
+        </tr>`;
+        $("#pdfTableBody").append(noDataMessage);
+      }
+    }
+  });
+}
+
+
+
+$(document).on('input', '#filterContainer .filter-rule #test_input', function () {
+  var folioId = $('#hide_folio').text();
+  triggerAjaxCall(folioId);
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+        var buildingSelect = document.getElementById('building_list');
+        buildingSelect.selectedIndex = -1;  
+    });
+
+
+</script>
+
+{% endblock javascript %}

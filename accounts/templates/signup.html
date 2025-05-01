@@ -1,0 +1,74 @@
+{% comment %} {% extends 'registration/registration_base.html' %} {% endcomment %}
+
+{% block title %}
+  SIGN UP
+{% endblock title %}
+{% block content %}
+  <div class="account-wrap">
+    <a class="nav-link absloute-home-link" href="{% url 'index' %}">Home</a>
+    <div class="form-inner">
+      <h1 class="text-center">SIGN UP</h1>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="id_username" class="form-label">Username</label>
+          <input type="text"
+                 class="form-control"
+                 name="username"
+                 id="id_username"
+                 placeholder=""
+                 required />
+        </div>
+        <div class="mb-3">
+          <label for="id_email" class="form-label">Email</label>
+          <input type="email"
+                 class="form-control"
+                 name="email"
+                 id="id_email"
+                 placeholder=""
+                 required />
+        </div>
+        <div class="mb-3">
+          <label for="id_first_name" class="form-label">First Name</label>
+          <input type="text"
+                 class="form-control"
+                 name="first_name"
+                 id="id_first_name"
+                 placeholder=""
+                 required />
+        </div>
+        <div class="mb-3">
+          <label for="id_last_name" class="form-label">Last Name</label>
+          <input type="text"
+                 class="form-control"
+                 name="last_name"
+                 id="id_last_name"
+                 placeholder=""
+                 required />
+        </div>
+        <div class="mb-3">
+          <label for="id_password1" class="form-label">Password</label>
+          <input type="password"
+                 class="form-control"
+                 name="password1"
+                 id="id_password1"
+                 placeholder=""
+                 required />
+        </div>
+        <div class="mb-3">
+          <label for="id_password2" class="form-label">Confirm Password</label>
+          <input type="password"
+                 class="form-control"
+                 name="password2"
+                 id="id_password2"
+                 placeholder=""
+                 required />
+        </div>
+        <button type="submit" class="btn-primary text-capitalize">SIGN UP</button>
+        <p>
+          Already have an Account? <a href="{% url 'login' %}">Login</a>
+        </p>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

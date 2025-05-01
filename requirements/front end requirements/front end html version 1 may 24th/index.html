@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panacomps</title>
+    <link href="assets/css/select-2.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/daterangepicker.css" />
+    <link rel="stylesheet" href="assets/css/datatables.min.css" />
+    <link rel="stylesheet" href="assets/css/stylesheet.css" />
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+        <img src="assets/images/logo.jpeg" width="30" height="30" alt="logo" />
+      </header>
+      <main>
+        <section class="about-panacops">
+          <div class="heading">
+            <h5>👋 Hello Back, Test User</h5>
+          </div>
+          <div class="retool-grid retool-grid-direction">
+            <div class="retool-grid-content">
+              <h3>Panacomps</h3>
+              <p>
+                Discover Panacomps, Panamá's exclusive solution for real estate
+                comparables. Designed for Panamá's unique property market, this
+                tool offers real-time data and insights for professionals and
+                investors. Simplify property evaluations and make informed
+                decisions with Panacomps.<br /><br />Please submit a request for
+                a new P.H. building <a href="#">here.</a> <br />Please submit
+                any feedback or bugs <a href="#">here.</a>
+              </p>
+            </div>
+            <div class="retool-grid-img">
+              <img
+                src="assets/images/logo.jpeg"
+                width="128"
+                height="128"
+                alt="logo"
+              />
+            </div>
+          </div>
+        </section>
+        <section class="filters-section">
+          <h4>Building (P.H.) Filters</h4>
+          <div class="filter-grid">
+            <div class="item">
+              <div class="data-field">
+                <label class="form-label" for="">Building List</label>
+                <select class="form-select select2-field" name="" id="">
+                  <option selected>Select one</option>
+                  <option value="">New Delhi</option>
+                  <option value="">Istanbul</option>
+                  <option value="">Jakarta</option>
+                </select>
+              </div>
+            </div>
+            <div class="item">
+              <button type="button" class="reset-btn">
+                <span>Reset Building</span>
+              </button>
+            </div>
+            <div class="item">
+              <div class="data-field">
+                <label class="form-label" for="">Filter by Date Range</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  name="daterange"
+                  value="01/01/2018 - 01/15/2018"
+                />
+              </div>
+            </div>
+            <div class="item">
+              <div class="data-field">
+                <label class="form-label" for="">Unit List</label>
+                <select class="form-select select2-field" name="" id="">
+                  <option selected>Select one</option>
+                  <option value="">New Delhi</option>
+                  <option value="">Istanbul</option>
+                  <option value="">Jakarta</option>
+                </select>
+              </div>
+            </div>
+            <div class="item">
+              <div class="data-field">
+                <label class="form-label" for="">Min Sales Price</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name=""
+                  id=""
+                  value=""
+                  placeholder="Enter value"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="item">
+              <div class="data-field">
+                <label class="form-label" for="">Max Sales Price</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name=""
+                  id=""
+                  value=""
+                  placeholder="Enter value"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="item">
+              <div class="data-field">
+                <label class="form-label" for="">Folio Search</label>
+                <select class="form-select select2-field" name="" id="">
+                  <option selected>Select one</option>
+                  <option value="">New Delhi</option>
+                  <option value="">Istanbul</option>
+                  <option value="">Jakarta</option>
+                </select>
+              </div>
+            </div>
+            <div class="item">
+              <div class="data-field">
+                <label class="form-label" for="">Min Sq. Meters</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name=""
+                  id=""
+                  value=""
+                  placeholder="Enter value"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="item">
+              <div class="data-field">
+                <label class="form-label" for="">Max Sq. Meters</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name=""
+                  id=""
+                  value=""
+                  placeholder="Enter value"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="selected-criteria">
+          <div class="heading">
+            <h4>Selected Criteria</h4>
+          </div>
+          <div class="retool-grid">
+            <div class="selected-item">
+              <ul>
+                <li>Building: P.H. BAHIA ESMERALDA</li>
+                <li>Sold between: 17/05/2013 and 17/05/2024</li>
+                <li>Sales Amount Range: $B/.0 - $B/.10,000,000</li>
+                <li>Square Meters Range: 0 m2 - 1000 m2</li>
+              </ul>
+            </div>
+            <div>
+              <ul>
+                <li>Number of Records: 32</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="info-section">
+          <div class="info-table info-table-max">
+            <table class="infoTable">
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 171px">Unit</th>
+                  <th scope="col">Folio</th>
+                  <th scope="col">Sales Date</th>
+                  <th scope="col">Sale Amount</th>
+                  <th scope="col">Square Meters</th>
+                  <th scope="col">Price Per Square Meters</th>
+                  <th scope="col">Date Added</th>
+                  <th scope="col">View Detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="">
+                  <td scope="row" style="width: 171px">
+                    <div>
+                      INTERIOR APTO.19 A, EDIFICIO P.H. BAHIA ESMERALDA,
+                      CORREGIMIENTO CIUDAD DE PANAMÁ, DISTRITO PANAMÁ, PROVINCIA
+                      PANAMÁ, OBSERVACIONES PLANTA: NIVEL 1900 SUPERFICIE UNIDAD
+                      DEPARTAMENTAL:245M2.75DM2.
+                    </div>
+                  </td>
+                  <td>63603</td>
+                  <td>31/07/2023</td>
+                  <td>$200,001.60</td>
+                  <td>245</td>
+                  <td>$816.33</td>
+                  <td>07/09/2023</td>
+                  <td>
+                    <button
+                      type="button"
+                      id="viewDwtail"
+                      class="view-detail-btn"
+                    >
+                      <span>View Detail</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="panacomp-feature">
+            <div class="feature-tag">Premium Panacomps Feature</div>
+            <button class="download-btn">Download Comps</button>
+            <div class="panacomp-feature-desc">
+              <div class="heading">
+                <div class="feature-tag">Premium Panacomps Feature</div>
+                <button class="download-btn">Execute Analysis</button>
+              </div>
+              <div class="content">
+                <p class="">👋 Panacomps AI Assistant Here!</p>
+                <p class="">Below are statistics on your selected data:</p>
+                <p class="">
+                  Change your data inputs and I will review and output again!
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div>
+      <div class="add-filter-rule"></div>
+      <div class="add-filter-group"></div>
+    </div>
+
+    <!------------Modal---------->
+    <div id="viewDwtailModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-body modal-body-height">
+          <span class="close">&times;</span>
+          <div>
+            <p>Building: P.H. BAHIA ESMERALDA</p>
+            <p>Folio: 63603</p>
+            <p>
+              INTERIOR APTO.19 A, EDIFICIO P.H. BAHIA ESMERALDA, CORREGIMIENTO
+              CIUDAD DE PANAMÁ, DISTRITO PANAMÁ, PROVINCIA PANAMÁ, OBSERVACIONES
+              PLANTA: NIVEL 1900 SUPERFICIE UNIDAD DEPARTAMENTAL:245M2.75DM2.
+            </p>
+            <div class="info-table info-table2">
+              <table class="infoTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Folio</th>
+                    <th scope="col">Municipality</th>
+                    <th scope="col">Area Code</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Construction Date</th>
+                    <th scope="col">Date Occupied</th>
+                    <th scope="col">Sales Date</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">Land Value</th>
+                    <th scope="col">Improvement Value</th>
+                    <th scope="col">Sales Amount</th>
+                    <th scope="col">Square Meters</th>
+                    <th scope="col">Price per Square Meter</th>
+                    <th scope="col">Loan?</th>
+                    <th scope="col">Loan Amount</th>
+                    <th scope="col">Effective Mortgage Rate</th>
+                    <th scope="col">Nominal Mortgage Rate</th>
+                    <th scope="col">Annual Interest Rate</th>
+                    <th scope="col">FECI</th>
+                    <th scope="col">Annual Interest Rate + FECI</th>
+                    <th scope="col">Lending Entity</th>
+                    <th scope="col">Date Added</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="row-bg">
+                    <td scope="row">63603</td>
+                    <td>PANAMÁ</td>
+                    <td>8700</td>
+                    <td>
+                      ARAJAIR LISBETH VALLE LAM, ARAJAIR LISBETH VALLE LAM DE
+                      TESTA
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>Jul 31, 2023</td>
+                    <td>$200,001.00</td>
+                    <td></td>
+                    <td></td>
+                    <td>$200,001.60</td>
+                    <td>245</td>
+                    <td>$816.33</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>07/09/2023</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="info-pdfInfoTable-wrap">
+              <div class="table-action">
+                <div class="filters-dropdown">
+                  <button
+                    class="filterBtn"
+                    onclick="toggleDropdown('mainFiltersDropdown')"
+                  >
+                    <img
+                      src="assets/images/filter-icon.svg"
+                      alt="filter-icon"
+                    />
+                    Filter
+                  </button>
+                  <div id="mainFiltersDropdown" class="filters-content">
+                    <div class="filter-grid filter-grid-custom">
+                      <p>Where</p>
+                      <div class="item">
+                        <div class="data-field">
+                          <select
+                            class="form-select select2-field"
+                            name=""
+                            id=""
+                          >
+                            <option selected>File name</option>
+                            <option value="">Pdf text</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="data-field">
+                          <select
+                            class="form-select select2-field"
+                            name=""
+                            id=""
+                          >
+                            <option selected>includes</option>
+                            <option value="">dose not includes</option>
+                            <option value="">is</option>
+                            <option value="">is not</option>
+                            <option value="">is empty</option>
+                            <option value="">is not empty</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="data-field">
+                          <input class="form-control" type="text" />
+                        </div>
+                      </div>
+                      <p>X</p>
+                    </div>
+                    <div class="filter-grid filter-grid-custom">
+                      <div class="item flex-unset">
+                        <div class="data-field">
+                          <select
+                            class="form-select select2-field"
+                            name=""
+                            id=""
+                          >
+                            <option selected>And</option>
+                            <option value="">Or</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="data-field">
+                          <select
+                            class="form-select select2-field"
+                            name=""
+                            id=""
+                          >
+                            <option selected>File name</option>
+                            <option value="">Pdf text</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="data-field">
+                          <select
+                            class="form-select select2-field"
+                            name=""
+                            id=""
+                          >
+                            <option selected>includes</option>
+                            <option value="">dose not includes</option>
+                            <option value="">is</option>
+                            <option value="">is not</option>
+                            <option value="">is empty</option>
+                            <option value="">is not empty</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="data-field">
+                          <input class="form-control" type="text" />
+                        </div>
+                      </div>
+                      <p>X</p>
+                    </div>
+                    <div class="filter-grid filter-grid-custom">
+                      <p>And</p>
+                      <div class="filter-grid filter-grid-custom border-class">
+                        <div class="wrapping">
+                          <p>Where</p>
+                          <div class="item">
+                            <div class="data-field">
+                              <select
+                                class="form-select select2-field"
+                                name=""
+                                id=""
+                              >
+                                <option selected>File name</option>
+                                <option value="">Pdf text</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="item">
+                            <div class="data-field">
+                              <select
+                                class="form-select select2-field"
+                                name=""
+                                id=""
+                              >
+                                <option selected>includes</option>
+                                <option value="">dose not includes</option>
+                                <option value="">is</option>
+                                <option value="">is not</option>
+                                <option value="">is empty</option>
+                                <option value="">is not empty</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="item">
+                            <div class="data-field">
+                              <input class="form-control" type="text" />
+                            </div>
+                          </div>
+                          <p>X</p>
+                        </div>
+                        <div class="add-contentbtn">
+                          <button
+                            class="filterBtn addbtn"
+                            onclick="toggleDropdown('addFiltersDropdown')"
+                          >
+                            + Add
+                          </button>
+                          <div
+                            id="addFiltersDropdown"
+                            class="filters-content nested-dropdown"
+                          >
+                            <button onclick="handleClick('no-group')">
+                              Add filter rule
+                            </button>
+                            <button onclick="handleClick('group')">
+                              Add filter group
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="add-contentbtn">
+                      <button
+                        class="filterBtn addbtn bordered-btn"
+                        onclick="toggleDropdown('addFiltersDropdown')"
+                      >
+                        + Add
+                      </button>
+                      <div
+                        id="addFiltersDropdown"
+                        class="filters-content nested-dropdown"
+                      >
+                        <button onclick="handleClick('no-group')">
+                          Add filter rule
+                        </button>
+                        <button onclick="handleClick('group')">
+                          Add filter group
+                        </button>
+                      </div>
+                    </div>
+                    <button class="filterBtn addbtn clearbtn">
+                      Clear filters
+                    </button>
+                  </div>
+                </div>
+
+                <button id="csvBtn">
+                  <img
+                    src="assets/images/download-icon.svg"
+                    alt="download-icon"
+                  />
+                  Download
+                </button>
+                <button id="refreshBtn">
+                  <img src="assets/images/refresh-con.svg" alt="refresh-icon" />
+                  Refresh
+                </button>
+              </div>
+              <table class="pdfInfoTable" id="pdfInfoTable">
+                <thead>
+                  <tr>
+                    <th scope="col" class="file-width">Filename</th>
+                    <th scope="col" class="full-width">Pdf text</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="row-bg clickable">
+                    <td scope="row" class="file-width relative-txt">
+                      <div class="">
+                        Propiedad_a_favor_de_ARAJAIR_LISBETH_VALLE_LAM_Cédula_8-391-866_Asiento_Electrónico_N__1_(Migración_a_Folio_Electrónico)_25-05-2022.pdf
+                      </div>
+                    </td>
+                    <td class="full-width relative-txt">
+                      <div class="">
+                        Registro Público de Panamá FOLIO REAL (INMUEBLE) PANAMÁ
+                        CÓDIGO DE UBICACIÓN 8700, FOLIO REAL Nº 63603 (PROPIEDAD
+                        HORIZONTAL) - INSCRIPCIÓN INSCRITO AL ASIENTO NÚMERO 1
+                        MIGRACIÓN A FOLIO REAL ELECTRÓNICO OBSERVACIONES A LA
+                        MIGRACIÓN SE ACTUALIZA A FOLIO ELECTRONICO LA FICHA:
+                        63603 DATOS DEL INMUEBLE DIRECCIÓN: INTERIOR APTO.19 A,
+                        EDIFICIO P.H. BAHIA ESMERALDA, CORREGIMIENTO CIUDAD DE
+                        PANAMÁ, DISTRITO PANAMÁ, PROVINCIA PANAMÁ, OBSERVACIONES
+                        PLANTA: NIVEL 1900 SUPERFICIE UNIDAD
+                        DEPARTAMENTAL:245M2.75DM2. DENOMINACIÓN: P.H. BAHIA
+                        ESMERALDA VALOR DEL INMUEBLE: DOSCIENTOS MIL UNO BALBOAS
+                        CON SESENTA (B/.200,001.60) TITULAR(ES) REGISTRAL(ES)
+                        ACTIVO(S) NOMBRE: ARAJAIR LISBETH VALLE LAM (CÉDULA
+                        8-391-866) TIPO DE DERECHO REGISTRAL: PROPIEDAD NOMBRE:
+                        PABLO TESTA RANGEL (CÉDULA 8-366-169) TIPO DE DERECHO
+                        REGISTRAL: PROPIEDAD RESTRICCIONES DATOS GENERALES
+                        DESCRIPCIÓN DE LA RESTRICCIÓN: SUJETO AL REGLAMENTO DE
+                        COPROPIEDAD DATOS DE LA ENTRADA A MIGRAR FECHA DE LA
+                        ENTRADA: 29/09/2004 NÚMERO DE ENTRADA: TOMO: 2004
+                        ASIENTO: 137909 CONSTITUCIÓN DE HIPOTECA DE BIEN
+                        INMUEBLE DATOS GENERALES GRADO DE HIPOTECA: PRIMERA
+                        MONTO: DOSCIENTOS VEINTISÉIS MIL CUATROCIENTOS CATORCE
+                        BALBOAS CON OCHENTA Y CUATRO (B/.226,414.84) PLAZO: 5
+                        AÑOS DATOS DE LA ENTRADA A MIGRAR FECHA DE LA ENTRADA:
+                        20/07/2005 NÚMERO DE ENTRADA: TOMO: 2005 ASIENTO: 117876
+                        DATOS DEL ACREEDOR NOMBRE: BANISTMO S.A. 1/2Valide su
+                        documento electrónico a través del CÓDIGO QR impreso en
+                        el pie de página o a través del Identificador
+                        Electrónico: 1FC0ECDE-AA01-459E-BD18-F071D9AA01BE
+                        Registro Público de Panamá - Vía España, frente al
+                        Hospital San Fernando Apartado Postal 0830 - 1596
+                        Panamá, República de Panamá - (507)501-6000 Copia para
+                        propositos informativos solamente Registro Público de
+                        Panamá TIPO DE DERECHO: HIPOTECA DEUDOR PABLO TESTA
+                        RANGEL CÉDULA 8-366-169 ESTE ASIENTO REGISTRAL HA SIDO
+                        PRACTICADO EN LA ENTRADA 187766/2022 (0) PRESENTADA EN
+                        ESTE REGISTRO EL DÍA 12/05/2022 A LAS 1:17 P. M.
+                        DOCUMENTOS PRESENTADOS ESCRITURA PÚBLICA NÚMERO 6574 DE
+                        FECHA 25/03/2022 AUTORIZANTE: NOTARIO PÚBLICO NORMA
+                        MARLENIS VELASCO CEDEÑO DE LA NOTARÍA NÚMERO 12 DE
+                        PANAMÁ LOS DERECHOS DE CALIFICACIÓN Y REGISTRO ASCIENDEN
+                        A CUARENTA Y UNO BALBOAS (B/.41.00) 2/2Valide su
+                        documento electrónico a través del CÓDIGO QR impreso en
+                        el pie de página o a través del Identificador
+                        Electrónico: 1FC0ECDE-AA01-459E-BD18-F071D9AA01BE
+                        Registro Público de Panamá - Vía España, frente al
+                        Hospital San Fernando Apartado Postal 0830 - 1596
+                        Panamá, República de Panamá - (507)501-6000 Copia para
+                        propositos informativos solamente
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="row-bg clickable">
+                    <td scope="row" class="file-width relative-txt">
+                      <div class="">
+                        Propiedad_a_favor_de_ARAJAIR_LISBETH_VALLE_LAM_Cédula_8-391-866_Asiento_Electrónico_N__1_(Migración_a_Folio_Electrónico)_25-05-2022.pdf
+                      </div>
+                    </td>
+                    <td class="full-width relative-txt">
+                      <div class="">
+                        Registro Público de Panamá FOLIO REAL (INMUEBLE) PANAMÁ
+                        CÓDIGO DE UBICACIÓN 8700, FOLIO REAL Nº 63603 (PROPIEDAD
+                        HORIZONTAL) - INSCRIPCIÓN INSCRITO AL ASIENTO NÚMERO 1
+                        MIGRACIÓN A FOLIO REAL ELECTRÓNICO OBSERVACIONES A LA
+                        MIGRACIÓN SE ACTUALIZA A FOLIO ELECTRONICO LA FICHA:
+                        63603 DATOS DEL INMUEBLE DIRECCIÓN: INTERIOR APTO.19 A,
+                        EDIFICIO P.H. BAHIA ESMERALDA, CORREGIMIENTO CIUDAD DE
+                        PANAMÁ, DISTRITO PANAMÁ, PROVINCIA PANAMÁ, OBSERVACIONES
+                        PLANTA: NIVEL 1900 SUPERFICIE UNIDAD
+                        DEPARTAMENTAL:245M2.75DM2. DENOMINACIÓN: P.H. BAHIA
+                        ESMERALDA VALOR DEL INMUEBLE: DOSCIENTOS MIL UNO BALBOAS
+                        CON SESENTA (B/.200,001.60) TITULAR(ES) REGISTRAL(ES)
+                        ACTIVO(S) NOMBRE: ARAJAIR LISBETH VALLE LAM (CÉDULA
+                        8-391-866) TIPO DE DERECHO REGISTRAL: PROPIEDAD NOMBRE:
+                        PABLO TESTA RANGEL (CÉDULA 8-366-169) TIPO DE DERECHO
+                        REGISTRAL: PROPIEDAD RESTRICCIONES DATOS GENERALES
+                        DESCRIPCIÓN DE LA RESTRICCIÓN: SUJETO AL REGLAMENTO DE
+                        COPROPIEDAD DATOS DE LA ENTRADA A MIGRAR FECHA DE LA
+                        ENTRADA: 29/09/2004 NÚMERO DE ENTRADA: TOMO: 2004
+                        ASIENTO: 137909 CONSTITUCIÓN DE HIPOTECA DE BIEN
+                        INMUEBLE DATOS GENERALES GRADO DE HIPOTECA: PRIMERA
+                        MONTO: DOSCIENTOS VEINTISÉIS MIL CUATROCIENTOS CATORCE
+                        BALBOAS CON OCHENTA Y CUATRO (B/.226,414.84) PLAZO: 5
+                        AÑOS DATOS DE LA ENTRADA A MIGRAR FECHA DE LA ENTRADA:
+                        20/07/2005 NÚMERO DE ENTRADA: TOMO: 2005 ASIENTO: 117876
+                        DATOS DEL ACREEDOR NOMBRE: BANISTMO S.A. 1/2Valide su
+                        documento electrónico a través del CÓDIGO QR impreso en
+                        el pie de página o a través del Identificador
+                        Electrónico: 1FC0ECDE-AA01-459E-BD18-F071D9AA01BE
+                        Registro Público de Panamá - Vía España, frente al
+                        Hospital San Fernando Apartado Postal 0830 - 1596
+                        Panamá, República de Panamá - (507)501-6000 Copia para
+                        propositos informativos solamente Registro Público de
+                        Panamá TIPO DE DERECHO: HIPOTECA DEUDOR PABLO TESTA
+                        RANGEL CÉDULA 8-366-169 ESTE ASIENTO REGISTRAL HA SIDO
+                        PRACTICADO EN LA ENTRADA 187766/2022 (0) PRESENTADA EN
+                        ESTE REGISTRO EL DÍA 12/05/2022 A LAS 1:17 P. M.
+                        DOCUMENTOS PRESENTADOS ESCRITURA PÚBLICA NÚMERO 6574 DE
+                        FECHA 25/03/2022 AUTORIZANTE: NOTARIO PÚBLICO NORMA
+                        MARLENIS VELASCO CEDEÑO DE LA NOTARÍA NÚMERO 12 DE
+                        PANAMÁ LOS DERECHOS DE CALIFICACIÓN Y REGISTRO ASCIENDEN
+                        A CUARENTA Y UNO BALBOAS (B/.41.00) 2/2Valide su
+                        documento electrónico a través del CÓDIGO QR impreso en
+                        el pie de página o a través del Identificador
+                        Electrónico: 1FC0ECDE-AA01-459E-BD18-F071D9AA01BE
+                        Registro Público de Panamá - Vía España, frente al
+                        Hospital San Fernando Apartado Postal 0830 - 1596
+                        Panamá, República de Panamá - (507)501-6000 Copia para
+                        propositos informativos solamente
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="assets/js/jquery-3.6.1.js"></script>
+    <script src="assets/js/select-2.js"></script>
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/daterangepicker.min.js"></script>
+    <script src="assets/js/datatables.min.js"></script>
+    <script src="assets/js/custom.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,157 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block title %}Panacomps{% endblock %}
+
+{% block content %}
+
+
+  <body class="form-body">
+    <div class="sign-in-container">
+      <img src="{% static 'assets/images/White PanaComps Logo on Blue 500 x 500 px.png' %}" alt="Panacomps-logo" />
+      <h2>Create Account</h2>
+      <h5>Fill out the forms below for creating new account here.</h5>
+      {% include 'common/error_messeges.html' %}
+      <form action="" method="post">
+        {% csrf_token %}
+        <!-- {{form.as_p}} -->
+      <div class="item">
+        <div class="data-field">
+
+          <input
+            type="text"
+            class="form-control"
+            name="{{ form.first_name.name }}"
+            id="{{ form.first_name.id_for_label }}"
+            value="{{ form.first_name.value|default:'' }}"  
+            placeholder="First Name"
+            autocomplete="off"
+            required
+          />
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+
+          <input
+            type="text"
+            class="form-control"
+            name="{{ form.last_name.name }}"
+            id="{{ form.last_name.id_for_label }}"
+            value="{{ form.last_name.value|default:'' }}"  
+            placeholder="Last Name"
+            autocomplete="off"
+            required
+          />
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+            
+          <input
+            type="text"
+            class="form-control"
+            name="{{ form.email.name }}"
+            id="{{ form.email.id_for_label }}"
+            value="{{ form.email.value|default:'' }}"
+            placeholder="Email"
+            autocomplete="off"
+            required
+          />
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+          <select class="form-select select2-field" name="classification" id="Account-Type">
+            {% for classification in user_classifications %}
+                <option value="{{ classification.id }}" {% if form.classification.value == classification.id %}selected{% endif %}>{{ classification.name }}</option>
+            {% endfor %}
+        </select>
+          <!-- <select class="form-select select2-field" name="classification" id="Account-Type">
+            <option value="Real Estate Agent" selected>Real Estate Agent</option>
+            <option value="Broker">Broker</option>
+            <option value="Law Enforcement">Law Enforcement</option>
+            <option value="Investor">Investor</option>
+            <option value="Other">Other</option>
+          </select> -->
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+          <select class="form-select select2-field" name="language_preference" id="Language-Type">
+            <option value="English" selected>English</option>
+            <option value="Spanish">Spanish</option>
+            <option value="Portuguese">Portuguese</option>
+          </select>
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+
+          <select class="form-select select2-field" name="currency_preference" id="currency-Type">
+            <option value="USD" selected>USD</option>
+            <option value="BRL">BRL</option>
+            <option value="EUROS">EUROS</option>
+          </select>
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+           
+          <input
+            type="text"
+            class="form-control"
+            name="{{ form.username.name }}"
+            id="{{ form.username.id_for_label }}"
+            value="{{ form.username.value|default:'' }}"
+            placeholder="Username"
+            autocomplete="off"
+            required
+          />
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+           
+          <input
+            type="password"
+            class="form-control"
+            name="{{ form.password1.name }}"
+            id="{{ form.password1.id_for_label }}"
+            value="{{ form.password1.value|default:'' }}"
+            placeholder="Password"
+            autocomplete="off"
+            required
+          />
+        </div>
+      </div>
+      <div class="item">
+        <div class="data-field">
+           
+          <input
+            type="password"
+            class="form-control"
+            name="{{ form.password2.name }}"
+            id="{{ form.password2.id_for_label }}"
+            value="{{ form.password2.value|default:'' }}"
+            placeholder="Confirm password"
+            autocomplete="off"
+            required
+          />
+        </div>
+      </div>
+      <button class="download-btn" type="submit">Sign-up</button>
+      </form>
+      <h5>Already have an account?<a href="{% url 'login' %}">Sign-in</a></h5>
+    </div>
+
+    
+  </body>
+
+
+{% endblock %}
+
+
+
+
+

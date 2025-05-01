@@ -1,0 +1,29 @@
+<!-- Modal Box for Help -->
+<div id="helpAnalysisModal" class="modal" style="display: none;align-content: center;">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <h4 style="margin-bottom: 10px;color:#007bff">Glossary</h4>
+    <div id="help AnalysisContent">
+      <table class="glossary-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>ESPAÑOL</th>
+            <th></th>
+            <th>English</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for term in glossary_terms %}
+            <tr>
+              <td>{{ term.term_es }}</td>
+              <td>{{ term.description_es }}</td>
+              <td>{{ term.term_en }}</td>
+              <td>{{ term.description_en }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

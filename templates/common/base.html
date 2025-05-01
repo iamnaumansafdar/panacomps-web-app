@@ -1,0 +1,38 @@
+<!-- base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Panacomps{% endblock %}</title>
+  <link href="{% static 'assets/css/select-2.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'assets/css/daterangepicker.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/datatables.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/stylesheet.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/index.css' %}">
+
+</head>
+
+<body>
+ 
+      {% block content %}
+      {% endblock %}
+
+      {% block javascript %}
+        
+      <!-- JAVASCRIPT -->
+
+      {% endblock javascript %}
+      
+    
+  <script src="{% static 'assets/js/jquery-3.6.1.js' %}"></script>
+  <script src="{% static 'assets/js/select-2.js' %}"></script>
+  <script src="{% static 'assets/js/moment.min.js' %}"></script>
+  <script src="{% static 'assets/js/daterangepicker.min.js' %}"></script>
+  <script src="{% static 'assets/js/datatables.min.js' %}"></script>
+  <script src="{% static 'assets/js/custom.js' %}"></script>
+</body>
+
+</html>

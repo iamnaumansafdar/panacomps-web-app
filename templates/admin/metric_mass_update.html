@@ -1,0 +1,59 @@
+{% extends "admin/base_site.html" %}
+{% load custom_filters %}
+{% block content %}
+<style>
+    .form-control {
+        width: 100% !important;
+        height: auto;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+</style>
+
+<h2 style="font-family: Arial, sans-serif; color: #333; margin-bottom: 20px;">Mass Metric Update</h2>
+<form method="post" id="massUpdateForm" style="background-color: #F9F9F9; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
+    {% csrf_token %}
+    <div style="margin-bottom: 15px;">
+        <label for="id_field" style="display: block; font-weight: bold; margin-bottom: 5px;">{{ form.field.label_tag }}</label>
+        {{ form.field|add_class:"form-control" }}  <!-- Ensure the dropdown has the same styling -->
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <label for="id_value" style="display: block; font-weight: bold; margin-bottom: 5px;">New value:</label>
+        <input type="text" name="value" id="id_value" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+
+    <input type="hidden" name="action" value="mass_update_metrics">
+    <input type="hidden" name="confirm" value="1">
+    {% for obj in queryset %}
+        <input type="hidden" name="_selected_action" value="{{ obj.pk }}">
+    {% endfor %}
+    <button type="button" id="applyButton" style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+        Apply Update
+    </button>
+</form>
+
+<script>
+document.getElementById("id_field").onchange = function() {
+    console.log('working')
+    var selectedField = this.value;
+    var valueInput = document.getElementById("id_value");
+
+    if (selectedField === "fecha_de_construccion" || selectedField === "fecha_de_ocupacion" || selectedField === "fecha_de_ocupacion" || selectedField === "sales_transaction_date" || selectedField === "timestamp") {
+        valueInput.type = "date";  // Change input type to date
+        valueInput.placeholder = "YYYY-MM-DD";
+    } else {
+        valueInput.type = "text";  // Change input type to text for other fields
+        valueInput.placeholder = "";
+    }
+};
+
+document.getElementById("applyButton").onclick = function() {
+    if (confirm("Are you sure you want to apply this update to all selected records?")) {
+        document.getElementById("massUpdateForm").submit();
+    }
+};
+</script>
+{% endblock %}

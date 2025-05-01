@@ -1,0 +1,135 @@
+{% load static %}
+<!------------View ForClosure Modal---------->
+<div id="viewForclosureModal" class="modal" aria-labelledby="modalTitle" aria-describedby="filtersDescription">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-body">
+        <span class="close-button" id="closebtn">&times;</span>
+        <div>
+  
+         <p>Building: <span id="building_name3"></span> </p>
+          <p>Folio: <span id="folio_name3"></span> </p>
+          <p> <span id="domicilio_top3"></span></p>
+
+
+          <!-- Showing the detial data for metric  -->
+
+        <div class="info-table info-table2">
+          <table class="infoTable">
+            <thead>
+              <!-- <tr >
+                <th scope="col" style="text-align: center;">Folio</th>
+                <th scope="col">EDIFICIO</th>
+                <th scope="col">ORGANO_REMATE</th>
+                <th scope="col">NOMBRE_ORGANO</th>
+                <th scope="col">PROVINCIA_ORGANO</th>
+                <th scope="col">NUM_ACTA_REMATE</th>
+                <th scope="col">FECHA_ACTA_REMATE</th>
+                <th scope="col">NUM_AUTO</th>
+                <th scope="col">FECHA_AUTO</th>
+                <th scope="col">NUM_OFICIO</th>
+                <th scope="col">FECHA_OFICIO</th>
+                <th scope="col">OBSERVACIONES</th>
+                <th scope="col">TITULAR_BAJA_NOMBRE</th>
+                <th  scope="col">TITULAR_BAJA_CEDULA</th>
+                <th scope="col">TITULAR_BAJA_DERECHO</th>
+                <th scope="col">NUEVO_TITULAR_NOMBRE</th>
+                <th scope="col">NUEVO_TITULAR_DERECHO</th>
+                <th scope="col">FECHA_REGISTRO</th>
+                <th scope="col">HORA_REGISTRO</th>
+                <th scope="col">DOC_PRESENTADO_TIPO</th>
+                <th scope="col">DOC_PRESENTADO_NUM</th>
+                <th scope="col">DOC_PRESENTADO_FECHA</th>
+                <th scope="col">NUM_ENTRADA</th>
+                <th scope="col">NOMBRE_JUEZ</th>
+                <th scope="col">DERECHOS_REGISTRO</th>
+              </tr> -->
+              <tr>
+                <th scope="col" style="text-align: center;">FOLIO</th>
+                <th scope="col">BUILDING</th>
+                <th scope="col">AUCTION AUTHORITY</th>
+                <th scope="col">AUTHORITY NAME</th>
+                <th scope="col">AUTHORITY PROVINCE</th>
+                <th scope="col">AUCTION ACT NUMBER</th>
+                <th scope="col">AUCTION ACT DATE</th>
+                <th scope="col">COURT ORDER NUMBER</th>
+                <th scope="col">COURT ORDER DATE</th>
+                <th scope="col">OFFICIAL LETTER NUMBER</th>
+                <th scope="col">OFFICIAL LETTER DATE</th>
+                <th scope="col">REMARKS</th>
+                <th scope="col">FORMER HOLDER NAME</th>
+                <th scope="col">FORMER HOLDER ID</th>
+                <th scope="col">FORMER HOLDER RIGHTS</th>
+                <th scope="col">NEW HOLDER NAME</th>
+                <th scope="col">NEW HOLDER RIGHTS</th>
+                <th scope="col">REGISTRATION DATE</th>
+                <th scope="col">REGISTRATION TIME</th>
+                <th scope="col">SUBMITTED DOCUMENT TYPE</th>
+                <th scope="col">SUBMITTED DOCUMENT NUMBER</th>
+                <th scope="col">SUBMITTED DOCUMENT DATE</th>
+                <th scope="col">ENTRY NUMBER</th>
+                <th scope="col">JUDGE'S NAME</th>
+                <th scope="col">REGISTRATION RIGHTS</th>
+              </tr>
+              
+            </thead>
+            <tbody class="ForclosureClass">
+
+              
+
+            </tbody>
+          </table>
+        </div>
+
+  
+  
+          <!-- Pdf Raw Table -->
+
+          <div class="info-pdfInfoTable-wrap">
+            <div class="table-action">
+            
+  
+             
+  
+  
+              <!-- <button id="csvBtn" type="button" data-folio=""
+  
+              {% if not can_download_pdf %}
+                disabled
+                style="opacity: 0.5; cursor: not-allowed;"
+            {% endif %}>
+            <img src="{% static 'assets/images/download-icon.svg' %}"
+                  alt="download-icon"> Download</button> -->
+  
+              <!-- <button type="button" id="refreshBtn"><img src="{% static 'assets/images/refresh-con.svg' %}"
+                  alt="refresh-icon"> Refresh
+              </button> -->
+            </div>
+            
+            <!-- Table for showing pdf data -->
+            <table class="ForclosureTable" id="ForclosureTable">
+              <thead>
+                <tr>
+                  <th scope="col" class="file-width">PDF Filename</th>
+                  <th scope="col" class="full-width">Extracted text</th>
+                </tr>
+              </thead>
+              <tbody id="ForclosureTableBody">
+                <div id="spinner" style="display: none; margin-inline: 50%; width: 100%;">
+                  <img src="{% static 'assets/images/spinner.gif'%}" alt="Loading..." style="width: 30px; height: 30px;">
+                </div>
+              </tbody>
+            </table>
+
+
+          </div>
+        
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
+

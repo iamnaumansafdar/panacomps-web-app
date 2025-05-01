@@ -1,0 +1,196 @@
+{% load static %}
+
+<span class="loader" style="display: none;"></span>
+
+<nav style="display: flex; justify-content: flex-end;" aria-label="Page navigation example">
+    <ul class="pagination" style="display: flex; list-style: none; gap: 10px;">
+        {% if metrics.paginator.num_pages > 1 %}
+            {% if metrics.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="1" aria-label="First" style="font-size: 13px; color: #000 !important; text-decoration: none;">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="{{ metrics.previous_page_number }}" aria-label="Previous" style="font-size: 13px; color: #000 !important; text-decoration: none;">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+                </li>
+            {% endif %}
+            {% for num in metrics.paginator.page_range %}
+                {% if num == metrics.number %}
+                    <li class="page-item active">
+                        <span class="page-link" style="font-size: 13px; color: #000 !important; text-decoration: none;">{{ num }}</span>
+                    </li>
+                {% elif num > metrics.number|add:'-3' and num < metrics.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="{{ num }}" style="font-size: 13px; color: #000 !important; text-decoration: none;">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if metrics.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="{{ metrics.next_page_number }}" aria-label="Next" style="font-size: 13px; color: #000 !important; text-decoration: none;">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="{{ metrics.paginator.num_pages }}" aria-label="Last" style="font-size: 13px; color: #000 !important; text-decoration: none;">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                </li>
+            {% endif %}
+        {% endif %}
+    </ul>
+</nav>
+
+
+  
+
+
+<button id="csvBtn1" type="button"   data-building="{{ building }}" class="table-download-btn"
+
+    {% if not can_download_summary_excel %}
+        disabled
+        style="opacity: 0.5; cursor: not-allowed;"
+    {% endif %}><img src="{% static 'assets/images/download-icon.svg' %}"
+    alt="download-icon"> Download Summary</button>
+
+
+
+<button style="margin: -8px !important;" id="download_detial" type="button"   data-building="{{ building }}" class="table-download-btn"
+        {% if not can_download_detailed_excel %}
+        disabled
+        style="opacity: 0.5; cursor: not-allowed;"
+        {% endif %}>
+<img src="{% static 'assets/images/download-icon.svg' %}"
+    alt="download-icon">  Download Details</button>    
+
+
+<button style="margin: 15px 6px !important; display: none;" id="ai_analysis" type="button"   class="table-download-btn">Execute AI Analysis</button>    
+
+
+<br>
+
+<!-- Modal Box for AI Analysis -->
+{% include 'modals/ai_analysis_modal.html' %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        // Open modal
+        $('#ai_analysis').click(function() {
+            $('#aiAnalysisModal').show();
+            
+            // Call OpenAI API here
+        });
+
+        // Close modal
+        $('.close-button').click(function() {
+            $('#aiAnalysisModal').hide();
+        });
+
+
+
+
+        //Download Summary
+        $(document).ready(function() {
+            var building = '{{ building }}'; 
+            $('#csvBtn1').click(function() {
+                var selectedBuilding = decodeURIComponent('{{ building|escapejs }}');
+                var minSalesPrice = decodeURIComponent('{{ min_sales_price|escapejs }}');
+                var maxSalesPrice = decodeURIComponent('{{ max_sales_price|escapejs }}');
+                var minSqMeter = decodeURIComponent('{{ min_sq_meter|escapejs }}');
+                var maxSqMeter = decodeURIComponent('{{ max_sq_meter|escapejs }}');
+                var selectedUnit = decodeURIComponent('{{ unit|escapejs }}');
+                var selectedFolio = decodeURIComponent('{{ folio|escapejs }}');
+                var selectedDateRange = decodeURIComponent('{{ date_range|escapejs }}');
+                console.log(selectedBuilding, selectedDateRange)
+        
+                $.ajax({
+                    url: '/search-result-csv/',
+                    data: {
+                    'min_sales_price': minSalesPrice,
+                    'max_sales_price': maxSalesPrice,
+                    'min_sq_meter': minSqMeter,
+                    'max_sq_meter': maxSqMeter,
+                    'building': selectedBuilding,
+                    'unit': selectedUnit,
+                    'folio': selectedFolio,
+                    'date_range': selectedDateRange
+                    },
+                xhrFields: {
+                        responseType: 'blob'  // Set responseType to 'blob' to handle binary data
+                    },
+                    success: function(response) {
+                    // Trigger file download
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(response);
+                    link.download = building + '_Download_Summary.xlsx';  // Updated file extension to .xlsx
+                    link.click();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error downloading file:', error);
+                }
+                });
+            });
+        });
+
+        //Download Detial
+$(document).ready(function() {
+    var building = '{{ building }}'; 
+    $('#download_detial').click(function() {
+        var selectedBuilding = decodeURIComponent('{{ building|escapejs }}');
+        var minSalesPrice = decodeURIComponent('{{ min_sales_price|escapejs }}');
+        var maxSalesPrice = decodeURIComponent('{{ max_sales_price|escapejs }}');
+        var minSqMeter = decodeURIComponent('{{ min_sq_meter|escapejs }}');
+        var maxSqMeter = decodeURIComponent('{{ max_sq_meter|escapejs }}');
+        var selectedUnit = decodeURIComponent('{{ unit|escapejs }}');
+        var selectedFolio = decodeURIComponent('{{ folio|escapejs }}');
+        var selectedDateRange = decodeURIComponent('{{ date_range|escapejs }}');
+        console.log(selectedBuilding, selectedDateRange);
+
+        $.ajax({
+            url: '/download-detial-result-excel/',  // Updated URL to your new view
+            data: {
+                'min_sales_price': minSalesPrice,
+                'max_sales_price': maxSalesPrice,
+                'min_sq_meter': minSqMeter,
+                'max_sq_meter': maxSqMeter,
+                'building': selectedBuilding,
+                'unit': selectedUnit,
+                'folio': selectedFolio,
+                'date_range': selectedDateRange
+            },
+            xhrFields: {
+                responseType: 'blob'  // Set responseType to 'blob' to handle binary data
+            },
+            success: function(response) {
+                // Trigger file download
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(response);
+                link.download = building + '_Download_Detail.xlsx';  // Updated file extension to .xlsx
+                link.click();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+            }
+        });
+    });
+});
+
+        </script>
+        
+

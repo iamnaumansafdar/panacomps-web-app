@@ -1,0 +1,371 @@
+{% load static %}
+{% load humanize %}
+{% load custom_filters %}
+{% for metric in metrics %}
+
+
+<tr class="">
+  <td style="max-width: 70px;">{{metric.folio.folio}}</td>
+  <td scope="row" style="min-width: 200px">
+    <div>{{metric.domicilio}}</div>
+
+  </td>
+  
+  <td> {% if metric.sales_transaction_date %} {{metric.sales_transaction_date |date:"d/m/Y"}} {% else %}-{% endif %}
+  </td>
+  <td>{% if metric.valor_del_traspaso %}${{ metric.valor_del_traspaso | intcomma }}{% else %}$0{% endif %}</td>
+  <td> {% if metric.superficie_inicial %} {{metric.superficie_inicial}} {% else %}-{% endif %}</td>
+
+  <td style="background-color: {{ color_dict|get_item:metric.id }};">{% if metric.price_per_square_meter %}${{metric.price_per_square_meter | intcomma }}{% else %}$0{% endif %}</td>
+  <!-- <td> {% if metric.timestamp %} {{ metric.timestamp|date:"d/m/Y" }} {% else %}-{% endif %}</td> -->
+  <td style="height: 36px; min-width:200px;">
+      <button type="button" id="viewDwtail" class="view-detail-btn" data-folio="{{ metric.folio.folio }}"
+      
+      {% if not can_view_detail %}
+      disabled
+      style="opacity: 0.5; cursor: not-allowed;"
+      {% endif %}
+      ><span>View Detail</span></button>
+
+
+      <button type="button" id="viewHistory" class="view-history-btn"
+      data-folio="{{ metric.folio.folio }}"
+      {% if not can_view_history %}
+      disabled
+      style="opacity: 0.5; cursor: not-allowed;"
+      {% endif %}
+      
+      ><span>View
+        History</span></button>
+
+
+
+  </td>
+
+  <!-- <td style="height: 36px; min-width:230px;" style="display: none;">
+    <button type="button" id="viewLines" class="view-liens-btn"
+      data-folio="{{ metric.folio.folio }}"><span>View Liens</span></button>
+
+
+
+      <button type="button" id="viewForeclosures" class="view-forclosures-btn"
+      data-folio="{{ metric.folio.folio }}"
+      
+      ><span>View
+        Foreclosures</span></button>
+
+
+
+  </td> -->
+</tr>
+
+
+
+
+{% endfor %}
+<!-- Summary information outside the table -->
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'assets/js/select-2.js' %}"></script>
+<script src="{% static 'assets/js/moment.min.js' %}"></script>
+<script src="{% static 'assets/js/daterangepicker.min.js' %}"></script>
+<script src="{% static 'assets/js/datatables.min.js' %}"></script>
+
+
+<script>
+
+
+  $(document).ready(function () {
+
+    //JavaScript Function to Format Numbers with Commas
+    function formatNumberWithCommas(x) {
+      console.log(x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+
+    $('.view-detail-btn').click(function () {
+      var folio = $(this).data('folio');
+
+      console.log(folio, 'folio')
+          // Check if the button is initially disabled
+      var csvBtn = $('#csvBtn');
+      var isInitiallyDisabled = csvBtn.prop('disabled');
+
+      if (!isInitiallyDisabled) {
+          // Only enable the button if it wasn't initially disabled
+          csvBtn.prop('disabled', false).removeClass('disabled').css({ 'opacity': 1, 'cursor': 'default' });
+      }
+
+      // $('#csvBtn').prop('disabled', false).removeClass('disabled').css({ 'opacity': 1, 'cursor': 'default' });
+
+      $.ajax({
+        url: "{% url 'view_detail_ajax' %}",
+        data: {
+          folio: folio
+        },
+        dataType: 'json',
+        success: function (response) {
+          var pdfData = response.pdf_raw_data;
+          var s3_url = response.s3_url; 
+          var metrics = response.metrics;
+          var fileExists = response.file_exists;
+          console.log(pdfData, 'pdf')
+          console.log(metrics, 'metric')
+
+         
+
+
+          if (metrics.length > 0) {
+            function formatDate(dateString) {
+              var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+              var date = new Date(dateString);
+              return date.toLocaleDateString('en-GB', options); // 'en-GB' locale for DD/MM/YYYY format
+            }
+
+
+            // top items
+            $("#building_name").html(metrics[0].edificio);
+            $("#folio_name").html(metrics[0].folio__folio);
+            $("#domicilio_top").html(metrics[0].domicilio);
+            // end top items
+            $("#folio").html(metrics[0].folio__folio);
+            $("#municipio").html(metrics[0].municipio);
+            $("#codigo_ubicacion").html(metrics[0].codigo_ubicacion);
+            $("#propietarios").html(metrics[0].propietarios);
+
+            var formattedFechaDeConstruccion = formatDate(metrics[0].fecha_de_construccion);
+            var formattedFechaDeOcupacion = formatDate(metrics[0].fecha_de_ocupacion);
+            var formattedSalesTransactionDate = formatDate(metrics[0].sales_transaction_date);
+
+            $("#fecha_de_construccion").html(formattedFechaDeConstruccion);
+            $("#fecha_de_ocupacion").html(formattedFechaDeOcupacion);
+            $("#sales_transaction_date").html(formattedSalesTransactionDate);
+
+            // Values with $
+            var firstMetric = metrics[0];
+            $('#valor').html(firstMetric.valor ? '$' + formatNumberWithCommas(firstMetric.valor) : '$0');
+            $('#valor_del_terreno').html(firstMetric.valor_del_terreno ? '$' + formatNumberWithCommas(firstMetric.valor_del_terreno) : '$0');
+            $('#valor_de_mejoras').html(firstMetric.valor_de_mejoras ? '$' + formatNumberWithCommas(firstMetric.valor_de_mejoras) : '$0');
+            $('#valor_del_traspaso').html(firstMetric.valor_del_traspaso ? '$' + formatNumberWithCommas(firstMetric.valor_del_traspaso) : '$0');
+            $('#price_per_square_meter').html(firstMetric.price_per_square_meter ? '$' + formatNumberWithCommas(firstMetric.price_per_square_meter) : '$0');
+            $('#monto').html(firstMetric.monto ? '$' + formatNumberWithCommas(firstMetric.monto) : '$0')
+
+
+            // Values with %
+            $('#tasa_efectiva').html(firstMetric.tasa_efectiva ? firstMetric.tasa_efectiva + '%' : '0');
+            $('#tasa_nominal').html(firstMetric.tasa_nominal ? firstMetric.tasa_nominal + '%' : '0');
+            $('#interes_anual').html(firstMetric.interes_anual ? firstMetric.interes_anual + '%' : '0');
+            $('#feci').html(firstMetric.feci ? firstMetric.feci + '%' : '0');
+            $('#interes_anual_feci').html(firstMetric.interes_anual_feci ? firstMetric.interes_anual_feci + '%' : '0');
+
+            $("#superficie_inicial").html(metrics[0].superficie_inicial);
+            var hipotecaText = metrics[0].hipoteca ? 'Yes' : 'No';
+            $("#hipoteca").html(hipotecaText);
+            // $("#hipoteca").html(metrics[0].hipoteca);
+            $("#nombre").html(metrics[0].nombre);
+            $("#uso_del_suelo").html(metrics[0].uso_del_suelo);
+
+            if (metrics.length > 0 && metrics[0].timestamp) {
+              var formattedDate = formatDate(metrics[0].timestamp);
+              $("#timestamp").html(formattedDate);
+            }
+
+
+            // set id for download pdf button
+            var firstMetric = metrics[0];
+            $('#csvBtn').attr('data-folio', firstMetric.folio__folio);
+
+
+          }
+          $("#pdfInfoTable tbody").empty();
+
+          if (pdfData.length == 0) {
+            console.log('Running')
+            $('#csvBtn').prop('disabled', true).addClass('disabled').css({ 'opacity': 0.5, 'cursor': 'not-allowed' });
+          }
+
+          if (pdfData.length > 0) {
+            pdfData.forEach(function (pdf) {
+              // var fileUrl = `${s3_url}/${pdf.filename}`;
+              // var fileUrl = s3_url;
+              var fileUrl = pdf.s3_url;
+              var newRow = `<tr class="row-bg clickable">
+                <td scope="row" class="file-width relative-txt">
+                    <div class=""> <a href="${fileUrl}"  class="file-link" data-file-exists="${fileExists}" download="${pdf.filename}">${pdf.filename}</a></div>
+                </td>
+                <td class="full-width relative-txt">
+                    <div class="">${pdf.pdf_text}</div>
+                </td>
+                </tr>`;
+
+              $("#pdfTableBody").append(newRow);
+            });
+
+            // Add click event listener for file links
+            $('.file-link').click(function (event) {
+                        var fileExists = $(this).data('file-exists');
+                        console.log(fileExists, 'fileExists')
+                        if (!fileExists) {
+                            alert('The selected PDF is not available for download. Please contact Technical Support via the support form. Thank you.');
+                            event.preventDefault(); // Prevent the default action (downloading the file)
+                        }
+                    });
+//             $('.file-link').click(function (event) {
+//   var fileExists = $(this).attr('data-file-exists');
+//   console.log(fileExists, 'fileExists')
+//   if (fileExists === "false") {
+//     alert('The requested file was not found on the server.');
+//     event.preventDefault(); // Prevent the default action (downloading the file)
+//   }
+// });
+
+
+          }
+
+
+          $('#viewDwtailModal').show();
+        }
+      });
+    });
+  });
+
+
+
+  // View History button
+  $(document).ready(function () {
+
+    //JavaScript Function to Format Numbers with Commas
+    function formatNumberWithCommas(x) {
+      console.log(x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+
+    $('.view-history-btn').each(function () {
+      var folio = $(this).data('folio');
+      var button = $(this);
+
+      $.ajax({
+        url: "{% url 'check-history-ajax' %}",
+        data: {
+          folio: folio
+        },
+        dataType: 'json',
+        success: function (response) {
+          if (!response.has_history) {
+            button.prop('disabled', true);
+            button.addClass('disabled-button'); // Optional: add a CSS class for styling
+          }
+        }
+      });
+    });
+
+
+// For History model ajax and open model    
+$('.view-history-btn').click(function () {
+      var folio = $(this).data('folio');
+
+      console.log(folio, 'folio')
+
+
+      $.ajax({
+        url: "{% url 'view-histoy-detail-ajax' %}",
+        data: {
+          folio: folio
+        },
+        dataType: 'json',
+        success: function (response) {
+          var metrics = response.metrics;
+          console.log(metrics, 'metric')
+          // console.log(metrics[0].edificio, 'Paras')
+          if (metrics.length > 0) {
+            function formatDate(dateString) {
+              var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+              var date = new Date(dateString);
+              return date.toLocaleDateString('en-GB', options); // 'en-GB' locale for DD/MM/YYYY format
+            }
+
+
+            // top items
+            $("#building_name1").html(metrics[0].edificio);
+            $("#folio_name1").html(metrics[0].metric__folio__folio);
+            $("#domicilio_top1").html(metrics[0].domicilio);
+
+            // $(".MetricClass").empty();
+            $(".MetricClassone").empty();
+
+
+            // end top items
+            metrics.forEach(function(metric) {
+            var formattedFechaDeConstruccion = formatDate(metric.fecha_de_construccion);
+            var formattedFechaDeOcupacion = formatDate(metric.fecha_de_ocupacion);
+            var formattedSalesTransactionDate = formatDate(metric.sales_transaction_date);
+
+          var newRow = `
+              <tr class="row-bg">
+                  <td scope="row">${metric.metric__folio__folio}</td>
+                  <td>${metric.municipio}</td>
+                  <td>${metric.codigo_ubicacion}</td>
+                  <td>${metric.propietarios}</td>
+                  <td>${formattedFechaDeConstruccion}</td>
+                  <td>${formattedFechaDeOcupacion}</td>
+                  <td>${formattedSalesTransactionDate}</td>
+                  <td>${metric.valor ? '$' + formatNumberWithCommas(metric.valor) : '$0'}</td>
+                  <td>${metric.valor_del_terreno ? '$' + formatNumberWithCommas(metric.valor_del_terreno) : '$0'}</td>
+                  <td>${metric.valor_de_mejoras ? '$' + formatNumberWithCommas(metric.valor_de_mejoras) : '$0'}</td>
+                  <td>${metric.valor_del_traspaso ? '$' + formatNumberWithCommas(metric.valor_del_traspaso) : '$0'}</td>
+                  <td>${metric.superficie_inicial}</td>
+                  <td>${metric.price_per_square_meter ? '$' + formatNumberWithCommas(metric.price_per_square_meter) : '$0'}</td>
+                  <td>${metric.hipoteca ? 'Yes' : 'No'}</td>
+                  <td>${metric.monto ? '$' + formatNumberWithCommas(metric.monto) : '$0'}</td>
+                  <td>${metric.tasa_efectiva ? metric.tasa_efectiva + '%' : '0'}</td>
+                  <td>${metric.tasa_nominal ? metric.tasa_nominal + '%' : '0'}</td>
+                  <td>${metric.interes_anual ? metric.interes_anual + '%' : '0'}</td>
+                  <td>${metric.feci ? metric.feci + '%' : '0'}</td>
+                  <td>${metric.interes_anual_feci ? metric.interes_anual_feci + '%' : '0'}</td>
+                  <td>${metric.nombre}</td>
+                  <td>${formatDate(metric.timestamp)}</td>
+              </tr>`;
+          
+          $(".MetricClassone").append(newRow);
+          });
+           
+
+
+          }
+          $('#viewHistoryModal').show();
+        }
+      });
+    });
+  });
+// End for History model ajax and open model    
+
+
+
+  $(document).ready(function () {
+    $('#csvBtn').click(function () {
+      var $button = $(this);
+      var folio = $button.data('folio');
+
+      // Disable the button and show downloading message
+      $button.prop('disabled', true).addClass('disabled').css({ 'opacity': 0.5, 'cursor': 'not-allowed' });
+      $button.text('Downloading...');
+
+      // Construct the download URL with the folio parameter
+      var downloadUrl = '/download-csv/?folio=' + encodeURIComponent(folio);
+
+      // Redirect to the download URL
+      window.location = downloadUrl;
+
+      // Re-enable the button and reset text after a short delay (optional)
+      setTimeout(function () {
+        $button.prop('disabled', false).removeClass('disabled').css({ 'opacity': 1, 'cursor': 'default' });
+        $button.text('Download');
+      }, 1000); // Adjust delay as needed
+    });
+  });
+
+
+</script>
